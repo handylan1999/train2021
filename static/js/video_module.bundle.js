@@ -44587,11 +44587,11 @@ var VideoModule = /*#__PURE__*/function (_Component) {
           selected_2 = _this$state.selected_2,
           selectOptions = _this$state.selectOptions;
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement(react__WEBPACK_IMPORTED_MODULE_13__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
-        "class": "container"
+        className: "container"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
-        "class": "row"
+        className: "row"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
-        "class": "col-4 bg-danger"
+        className: "col-4 bg-danger"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement(react_select__WEBPACK_IMPORTED_MODULE_17__.default, {
         placeholder: "\u9078\u64C7",
         options: selectNamesOptions,
@@ -44601,7 +44601,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         options: selectOptions,
         onChange: this.handleChange
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
-        "class": "col-8 bg-info text-center text-white"
+        className: "col-8 bg-info text-center text-white"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("label", null, selected), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("label", null, selected_2)))));
     }
   }]);

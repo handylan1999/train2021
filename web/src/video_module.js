@@ -66,10 +66,10 @@ class VideoModule extends Component {
 
         return (
             <React.Fragment>
-                <div class="container">
-                    <div class="row">
+                <div className="container">
+                    <div className="row">
 
-                        <div class="col-4 bg-danger">
+                        <div className="col-4 bg-danger">
                             <Select
                                 placeholder="選擇"
                                 options={selectNamesOptions}
@@ -82,7 +82,7 @@ class VideoModule extends Component {
                             />
                         </div>
 
-                        <div class="col-8 bg-info text-center text-white">
+                        <div className="col-8 bg-info text-center text-white">
                             <label>{selected}</label>
                             <label>{selected_2}</label>
                         </div>
