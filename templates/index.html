@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+    
+    <head>
+        <!-- web config start -->
+        <meta charset="UTF-8">
+        <meta name="title" content="Basketball Video Module">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>籃球數據調閱系統</title>
+        <!-- web config end -->
+
+        <!-- import shortcut icon start -->
+        <link 
+            rel="shortcut icon"
+            href="../web/Images/whistle.png"
+        />
+        <!-- import shortcut icon end -->
+
+        <!-- import bootstrap-4.6.0 start -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+            integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+            crossorigin="anonymous"
+        />
+        <!-- import bootstrap-4.6.0 end -->
+
+        <!-- import bootstrap-icons-1.5.0 start -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+        />
+        <!-- import bootstrap-icons-1.5.0 end -->
+
+        <!-- import local css start -->
+        <!-- <link 
+            rel="stylesheet"
+            href="./css/video_module.css"
+        /> -->
+        <!-- import local css end -->
+
+        <!-- import jquery-3.5.1.slim.min start -->
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"
+        >
+        </script>
+        <!-- import jquery-3.5.1.slim.min end -->
+
+        <!-- import bootstrap.bundle.min start -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+            crossorigin="anonymous"
+        >
+        </script>
+        <!-- import bootstrap.bundle.min end -->
+    </head>
+
+    <body>
+        <!-- Header Nav Start -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="../web/Images/ntus-logo-w-s.png" width="200" height="35" class="d-inline-block align-top" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#al-center-nav" aria-controls="al-center-nav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="al-center-nav">
+                    <ul class="navbar-nav mr-auto">
+                        <!-- Do Nothing. LJY-2021-06-10 -->
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">數據分析</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">影像調閱<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="log-out-link-text"  href="#">登出</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Header Nav End -->
+
+        <!-- Main Content Start -->
+        <main class="py-4">
+            <div class="container" id="video_module">
+                <!-- import video_module.bundle.js -->
+            </div>
+        </main>
+        <!-- Main Content End -->
+
+        <script src="../web/js/video_module.bundle.js"></script>
+    </body>
+</html>
