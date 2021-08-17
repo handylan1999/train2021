@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: './src/video_module.js',
     output: {
-        path: path.resolve(__dirname, 'js'),
+        path: path.resolve(__dirname, '../static/js'),
         filename: 'video_module.bundle.js'
     },
     mode: "development",
