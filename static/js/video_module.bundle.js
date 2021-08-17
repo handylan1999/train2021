@@ -44429,10 +44429,13 @@ var VideoModule = /*#__PURE__*/function (_Component) {
     _this.state = {
       //
       selectNamesOptions: [],
-      selected: ""
+      selectOptions: [],
+      selected: "1",
+      selected_2: "2"
     }; //
 
     _this.selectedHandleChange = _this.selectedHandleChange.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     return _this;
   } // load view on start
 
@@ -44479,19 +44482,29 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }
 
       return getSelectOptions;
-    }()
+    }() // Get Options
+
   }, {
-    key: "selectedHandleChange",
+    key: "getOptions",
     value: function () {
-      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-        var selected;
+      var _getOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var options;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                selected = "此選項編號:" + e.value + "您選擇的是:" + e.label;
+                options = [{
+                  value: '0',
+                  label: '111'
+                }, {
+                  value: '1',
+                  label: '222'
+                }, {
+                  value: '2',
+                  label: '333'
+                }];
                 this.setState({
-                  selected: selected
+                  selectOptions: options
                 });
 
               case 2:
@@ -44502,6 +44515,35 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         }, _callee2, this);
       }));
 
+      function getOptions() {
+        return _getOptions.apply(this, arguments);
+      }
+
+      return getOptions;
+    }()
+  }, {
+    key: "selectedHandleChange",
+    value: function () {
+      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+        var selected;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                selected = "此選項編號:" + e.value + "您選擇的是:" + e.label;
+                this.setState({
+                  selected: selected
+                });
+                this.getOptions();
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
       function selectedHandleChange(_x) {
         return _selectedHandleChange.apply(this, arguments);
       }
@@ -44509,11 +44551,41 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       return selectedHandleChange;
     }()
   }, {
+    key: "handleChange",
+    value: function () {
+      var _handleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+        var selected;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                selected = "此選項編號:" + e.value + "您選擇的是:" + e.label;
+                this.setState({
+                  selected_2: selected
+                });
+
+              case 2:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function handleChange(_x2) {
+        return _handleChange.apply(this, arguments);
+      }
+
+      return handleChange;
+    }()
+  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
           selectNamesOptions = _this$state.selectNamesOptions,
-          selected = _this$state.selected;
+          selected = _this$state.selected,
+          selected_2 = _this$state.selected_2,
+          selectOptions = _this$state.selectOptions;
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement(react__WEBPACK_IMPORTED_MODULE_13__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
         "class": "container"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
@@ -44524,9 +44596,13 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         placeholder: "\u9078\u64C7",
         options: selectNamesOptions,
         onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement(react_select__WEBPACK_IMPORTED_MODULE_17__.default, {
+        placeholder: "123456",
+        options: selectOptions,
+        onChange: this.handleChange
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("div", {
         "class": "col-8 bg-info text-center text-white"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("label", null, selected)))));
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("label", null, selected), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_13__.createElement("label", null, selected_2)))));
     }
   }]);
 
