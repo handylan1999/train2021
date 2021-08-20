@@ -1,0 +1,12 @@
+Flask
+Flask-RESTful
+flask-cors
+gunicorn
+itsdangerous
+Jinja2
+peewee
+Werkzeug
+jsonify
+numpy
+pandas
+openpyxl
