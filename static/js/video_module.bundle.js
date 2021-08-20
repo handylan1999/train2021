@@ -44502,11 +44502,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/web.dom.iterable.js */ "./node_modules/core-js/modules/web.dom.iterable.js");
 /* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _scss_video_module_scss__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../scss/video_module.scss */ "./scss/video_module.scss");
+Object(function webpackMissingModule() { var e = new Error("Cannot find module 'react-player'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _scss_video_module_scss__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../scss/video_module.scss */ "./scss/video_module.scss");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
@@ -44555,6 +44556,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var VideoModule = /*#__PURE__*/function (_Component) {
   _inherits(VideoModule, _Component);
 
@@ -44595,7 +44597,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
               case 0:
                 dataApiUrl = "/data";
                 _context.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().post(dataApiUrl, {
+                return axios__WEBPACK_IMPORTED_MODULE_17___default().post(dataApiUrl, {
                   'teamType': teamType
                 });
 
@@ -44707,23 +44709,23 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         className: "row"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9078\u64C7",
         options: selectOptions,
         onChange: this.selectedHandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9078\u64C7\u5E74\u4EFD",
         options: selectOptions,
         onChange: this.selectedHandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9078\u64C7\u76C3\u8CFD",
         options: selectOptions,
         onChange: this.selectedHandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9078\u64C7\u5B78\u6821",
         options: selectOptions,
         onChange: this.selectedHandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9032\u653B/\u9632\u5B88",
         options: selectOptions,
         onChange: this.selectedHandleChange
@@ -44731,7 +44733,9 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         className: "text-center"
       }, selected)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("table", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module 'react-player'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), {
+        url: "https://www.youtube.com/watch?v=7rN4ei_4wYY"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("table", {
         className: "table table-striped"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("thead", {
         className: "text-center"
@@ -44763,7 +44767,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (VideoModule);
 
 if (document.getElementById("video_module")) {
-  react_dom__WEBPACK_IMPORTED_MODULE_15__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(VideoModule, null), document.getElementById("video_module"));
+  react_dom__WEBPACK_IMPORTED_MODULE_16__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(VideoModule, null), document.getElementById("video_module"));
 }
 })();
 

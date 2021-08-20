@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactPlayer from 'react-player';
 import ReactDOM from "react-dom";
 import Select from 'react-select';
 import axios from "axios";
@@ -96,6 +97,7 @@ class VideoModule extends Component {
                         </div>
 
                         <div className="col">
+                            <ReactPlayer url='https://www.youtube.com/watch?v=7rN4ei_4wYY' />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
