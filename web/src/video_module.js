@@ -9,59 +9,56 @@ class VideoModule extends Component {
         super(props);
         this.state = {
             //
-            selectNamesOptions: [],
             selectOptions: [],
-            selected: "1",
-            selected_2: "2"
+            gameAllData:[],
+            selected: ""
         };
         //
         this.selectedHandleChange = this.selectedHandleChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
     // load view on start
     componentDidMount() {
-        this.getSelectOptions()
+        this.getSelectOptions();
+    }
+
+    // Get Data
+    async getGameAllData(teamType) {
+        const dataApiUrl = ("/data");
+        const res = await axios.post(dataApiUrl, { 'teamType': teamType });
+        const data = res.data;
+        this.setState({ gameAllData: data });
     }
 
     // Get Select Options
     async getSelectOptions() {
         const options = [
-            { value: '0', label: 'Chocolate' },
-            { value: '1', label: 'Strawberry' },
-            { value: '2', label: 'Vanilla' }
-        ]
-        this.setState({ selectNamesOptions: options });
-    }
-
-    // Get Options
-    async getOptions() {
-        const options = [
-            { value: '0', label: '111' },
-            { value: '1', label: '222' },
-            { value: '2', label: '333' }
+            { value: '0', label: 'Guest' },
+            { value: '1', label: 'Home' }
         ]
         this.setState({ selectOptions: options });
     }
 
+    // select Handle Change
     async selectedHandleChange(e) {
-        const selected = "此選項編號:" + e.value + "您選擇的是:" + e.label
-        this.setState({ selected: selected });
-        this.getOptions()
-    }
 
-    async handleChange(e) {
-        const selected = "此選項編號:" + e.value + "您選擇的是:" + e.label
-        this.setState({ selected_2: selected });
+        this.getGameAllData(e.label)
+
+        if (e.label == 'Guest'){
+            const selected = "此選項編號: " + e.value + " 您選擇的是: 客隊"
+            this.setState({ selected: selected });
+        }else{
+            const selected = "此選項編號: " + e.value + " 您選擇的是: 主隊"
+            this.setState({ selected: selected });
+        }
     }
 
     render() {
 
         const {
-            selectNamesOptions,
+            selectOptions,
             selected,
-            selected_2,
-            selectOptions
+            gameAllData
         } = this.state;
 
         return (
@@ -69,22 +66,40 @@ class VideoModule extends Component {
                 <div className="container">
                     <div className="row">
 
-                        <div className="col-4 bg-danger">
+                        <div className="col-4">
                             <Select
                                 placeholder="選擇"
-                                options={selectNamesOptions}
+                                options={selectOptions}
                                 onChange={this.selectedHandleChange}
                             />
-                            <Select
-                                placeholder="123456"
-                                options={selectOptions}
-                                onChange={this.handleChange}
-                            />
+                            <p className="text-center">{selected}</p>
                         </div>
 
-                        <div className="col-8 bg-info text-center text-white">
-                            <label>{selected}</label>
-                            <label>{selected_2}</label>
+                        <div className="col">
+                            <table className="table table-striped">
+                                <thead className="text-center">
+                                    <tr>
+                                        <th scope="col">局數</th>
+                                        <th scope="col">打者</th>
+                                        <th scope="col">投手</th>
+                                        <th scope="col">球種</th>
+                                        <th scope="col">球速</th>
+                                        <th scope="col">結果</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-center">
+                                    {gameAllData.map((data, index) => (
+                                        <tr key={index}>
+                                            <td>{data.局數}</td>
+                                            <td>{data.投手}</td>
+                                            <td>{data.打者}</td>
+                                            <td>{data.球種}</td>
+                                            <td>{data.球速}</td>
+                                            <td>{data.結果}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
 
                     </div>
