@@ -6,3 +6,6 @@ itsdangerous
 Jinja2
 peewee
 Werkzeug
+jsonify
+numpy
+pandas
