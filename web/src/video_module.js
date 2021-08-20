@@ -72,6 +72,26 @@ class VideoModule extends Component {
                                 options={selectOptions}
                                 onChange={this.selectedHandleChange}
                             />
+                            <Select
+                                placeholder="選擇年份"
+                                options={selectOptions}
+                                onChange={this.selectedHandleChange}
+                            />
+                            <Select
+                                placeholder="選擇盃賽"
+                                options={selectOptions}
+                                onChange={this.selectedHandleChange}
+                            />
+                            <Select
+                                placeholder="選擇學校"
+                                options={selectOptions}
+                                onChange={this.selectedHandleChange}
+                            />
+                            <Select
+                                placeholder="進攻/防守"
+                                options={selectOptions}
+                                onChange={this.selectedHandleChange}
+                            />
                             <p className="text-center">{selected}</p>
                         </div>
 

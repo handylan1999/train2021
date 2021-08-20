@@ -44711,6 +44711,22 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         placeholder: "\u9078\u64C7",
         options: selectOptions,
         onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+        placeholder: "\u9078\u64C7\u5E74\u4EFD",
+        options: selectOptions,
+        onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+        placeholder: "\u9078\u64C7\u76C3\u8CFD",
+        options: selectOptions,
+        onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+        placeholder: "\u9078\u64C7\u5B78\u6821",
+        options: selectOptions,
+        onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_18__.default, {
+        placeholder: "\u9032\u653B/\u9632\u5B88",
+        options: selectOptions,
+        onChange: this.selectedHandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("p", {
         className: "text-center"
       }, selected)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
