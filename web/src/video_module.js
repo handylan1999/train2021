@@ -9,6 +9,7 @@ class VideoModule extends Component {
         super(props);
         this.state = {
             //
+            selectYearOptions: [],
             selectOptions: [],
             gameAllData:[],
             selected: ""
@@ -20,6 +21,7 @@ class VideoModule extends Component {
     // load view on start
     componentDidMount() {
         this.getSelectOptions();
+        this.getSelectYearOptions();
     }
 
     // Get Data
@@ -39,6 +41,16 @@ class VideoModule extends Component {
         this.setState({ selectOptions: options });
     }
 
+    // Get Select Year Options
+    async getSelectYearOptions() {
+        const options = [
+            { value: '0', label: '2019' },
+            { value: '1', label: '2020' },
+            { value: '2', label: '2021' }
+        ]
+        this.setState({ selectYearOptions: options });
+    }
+
     // select Handle Change
     async selectedHandleChange(e) {
 
@@ -56,6 +68,7 @@ class VideoModule extends Component {
     render() {
 
         const {
+            selectYearOptions: [],
             selectOptions,
             selected,
             gameAllData
@@ -74,23 +87,23 @@ class VideoModule extends Component {
                             />
                             <Select
                                 placeholder="選擇年份"
-                                options={selectOptions}
+                                options={selectYearOptions}
                                 onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="選擇盃賽"
                                 options={selectOptions}
-                                onChange={this.selectedHandleChange}
+                            //    onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="選擇學校"
                                 options={selectOptions}
-                                onChange={this.selectedHandleChange}
+                            //    onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="進攻/防守"
                                 options={selectOptions}
-                                onChange={this.selectedHandleChange}
+                            //    onChange={this.selectedHandleChange}
                             />
                             <p className="text-center">{selected}</p>
                         </div>
