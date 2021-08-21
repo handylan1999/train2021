@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Select from 'react-select';
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player/youtube'
 import axios from "axios";
 import css from "../scss/video_module.scss";
 
@@ -148,7 +148,9 @@ class VideoModule extends Component {
                         </div>
 
                         <div className="col">
-                            <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' />
+                            <ReactPlayer
+                                url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
+                            />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
