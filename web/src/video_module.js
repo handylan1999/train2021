@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactPlayer from 'react-player';
 import ReactDOM from "react-dom";
 import Select from 'react-select';
 import axios from "axios";
