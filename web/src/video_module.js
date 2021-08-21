@@ -97,7 +97,6 @@ class VideoModule extends Component {
                         </div>
 
                         <div className="col">
-                            <ReactPlayer url='https://www.youtube.com/watch?v=7rN4ei_4wYY' />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
