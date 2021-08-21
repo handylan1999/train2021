@@ -10,6 +10,9 @@ class VideoModule extends Component {
         this.state = {
             //
             selectYearOptions: [],
+            selectGamenameOptions: [],
+            selectSchoolOptions: [],
+            selectStausOptions: [],
             selectOptions: [],
             gameAllData:[],
             selected: ""
@@ -21,7 +24,6 @@ class VideoModule extends Component {
     // load view on start
     componentDidMount() {
         this.getSelectOptions();
-        this.getSelectYearOptions();
     }
 
     // Get Data
@@ -39,6 +41,7 @@ class VideoModule extends Component {
             { value: '1', label: 'Home' }
         ]
         this.setState({ selectOptions: options });
+        this.getSelectYearOptions();
     }
 
     // Get Select Year Options
@@ -49,6 +52,38 @@ class VideoModule extends Component {
             { value: '2', label: '2021' }
         ]
         this.setState({ selectYearOptions: options });
+        this.getSelectGamenameOptions();
+    }
+
+    // Get Select Gamename Options
+    async getSelectGamenameOptions() {
+        const options = [
+            { value: '0', label: 'UBA' },
+            { value: '1', label: '友誼賽' },
+            { value: '2', label: '實習盃' }
+        ]
+        this.setState({ selectGamenameOptions: options });
+        this.getSelectSchoolOptions();
+    }
+
+    // Get Select School Options
+    async getSelectSchoolOptions() {
+        const options = [
+            { value: '0', label: '台灣體大' },
+            { value: '1', label: '世新大學' },
+            { value: '2', label: '政治大學' }
+        ]
+        this.setState({ selectSchoolOptions: options });
+        this.getSelectStausOptions();
+    }
+
+    // Get Select Staus Options
+    async getSelectStausOptions() {
+        const options = [
+            { value: '0', label: '進攻' },
+            { value: '1', label: '防守' }
+        ]
+        this.setState({ selectStausOptions: options });
     }
 
     // select Handle Change
@@ -68,7 +103,10 @@ class VideoModule extends Component {
     render() {
 
         const {
-            selectYearOptions: [],
+            selectYearOptions,
+            selectGamenameOptions,
+            selectSchoolOptions,
+            selectStausOptions,
             selectOptions,
             selected,
             gameAllData
@@ -88,21 +126,21 @@ class VideoModule extends Component {
                             <Select
                                 placeholder="選擇年份"
                                 options={selectYearOptions}
-                                onChange={this.selectedHandleChange}
+                            //    onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="選擇盃賽"
-                                options={selectOptions}
+                                options={selectGamenameOptions}
                             //    onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="選擇學校"
-                                options={selectOptions}
+                                options={selectSchoolOptions}
                             //    onChange={this.selectedHandleChange}
                             />
                             <Select
                                 placeholder="進攻/防守"
-                                options={selectOptions}
+                                options={selectStausOptions}
                             //    onChange={this.selectedHandleChange}
                             />
                             <p className="text-center">{selected}</p>
