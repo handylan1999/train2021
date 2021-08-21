@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Select from 'react-select';
-import ReactPlayer from 'react-player/youtube'
+import ReactPlayer from 'react-player/youtube';
 import axios from "axios";
 import css from "../scss/video_module.scss";
 
@@ -150,6 +150,9 @@ class VideoModule extends Component {
                         <div className="col">
                             <ReactPlayer
                                 url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
+                                playing
+                                width='100%'
+                                height='100%'
                             />
                             <table className="table table-striped">
                                 <thead className="text-center">
@@ -187,4 +190,5 @@ export default VideoModule;
 
 if (document.getElementById("video_module")) {
     ReactDOM.render(<VideoModule />, document.getElementById("video_module"));
+    ReactDOM.render(<VideoModule />, document.getElementById('col'));
 }

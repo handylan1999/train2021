@@ -48325,7 +48325,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }, selected)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement((react_player_youtube__WEBPACK_IMPORTED_MODULE_16___default()), {
-        url: "https://www.youtube.com/watch?v=ysz5S6PUM-U"
+        url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+        playing: true,
+        width: "100%",
+        height: "100%"
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("table", {
         className: "table table-striped"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("thead", {
@@ -48359,6 +48362,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
 if (document.getElementById("video_module")) {
   react_dom__WEBPACK_IMPORTED_MODULE_15__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(VideoModule, null), document.getElementById("video_module"));
+  react_dom__WEBPACK_IMPORTED_MODULE_15__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(VideoModule, null), document.getElementById('col'));
 }
 })();
 
