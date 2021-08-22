@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Select from 'react-select';
 import axios from "axios";
+import ReactPlayer from "react-player";
 import css from "../scss/video_module.scss";
 
 class VideoModule extends Component {
@@ -20,7 +21,6 @@ class VideoModule extends Component {
         };
         //
         this.selectedHandleChange = this.selectedHandleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     // load view on start
@@ -88,13 +88,6 @@ class VideoModule extends Component {
         this.setState({ selectStausOptions: options });
     }
 
-    async handleSubmit(e) {
-
-        e.preventDefault();
-        console.log('You clicked submit.');
-      }
-
-
     // select Handle Change
     async selectedHandleChange(e) {
 
@@ -153,9 +146,9 @@ class VideoModule extends Component {
                             //    onChange={this.selectedHandleChange}
                             />
                             
-                            <div className="mb-2">
+                            <div className="mb-4">
                                 <button variant="secondary" size="lg">
-                                    Clear
+                                    Clear All
                                 </button>{' '}
                                 <button variant="primary" size="lg">
                                     Submit
@@ -165,6 +158,7 @@ class VideoModule extends Component {
                         </div>
 
                         <div className="col">
+                            <ReactPlayer url='https://www.youtube.com/watch?v=zVVUuHly24c' />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
@@ -201,5 +195,4 @@ export default VideoModule;
 
 if (document.getElementById("video_module")) {
     ReactDOM.render(<VideoModule />, document.getElementById("video_module"));
-    ReactDOM.render(<Toggle />, document.getElementById('root'));
 }
