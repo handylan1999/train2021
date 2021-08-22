@@ -152,8 +152,12 @@ class VideoModule extends Component {
                                 options={selectStausOptions}
                             //    onChange={this.selectedHandleChange}
                             />
-                            <div>
-                                <button type="submit" variant="primary" size="lg">
+                            
+                            <div className="mb-2">
+                                <button variant="secondary" size="lg">
+                                    Clear
+                                </button>
+                                <button variant="primary" size="lg">
                                     Submit
                                 </button>
                             </div>
