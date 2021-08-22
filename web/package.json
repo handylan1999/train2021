@@ -37,7 +37,6 @@
         "webpack-cli": "^4.7.2"
     },
     "dependencies": {
-        "bootstrap": "^5.1.0",
         "react-player": "^2.9.0"
     }
 }

@@ -153,11 +153,21 @@ class VideoModule extends Component {
                                     Submit
                                 </button>
                             </div>
+                            <div className="mb-4">
+                                <button variant="secondary" size="lg">
+                                    Clear All
+                                </button>{' '}
+                                <button variant="primary" size="lg">
+                                    Submit
+                                </button>
+                            </div>
                             <p className="text-center">{selected}</p>
                         </div>
 
                         <div className="col">
-                            <ReactPlayer url='https://www.youtube.com/watch?v=zVVUuHly24c' />
+                            <ReactPlayer
+                                url='https://www.youtube.com/watch?v=zVVUuHly24c'
+                            />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
