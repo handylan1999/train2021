@@ -148,12 +148,6 @@ class VideoModule extends Component {
                         </div>
 
                         <div className="col">
-                            <ReactPlayer
-                                url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
-                                playing
-                                width='100%'
-                                height='100%'
-                            />
                             <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>
@@ -190,5 +184,4 @@ export default VideoModule;
 
 if (document.getElementById("video_module")) {
     ReactDOM.render(<VideoModule />, document.getElementById("video_module"));
-    ReactDOM.render(<VideoModule />, document.getElementById('col'));
 }
