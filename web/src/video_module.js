@@ -180,11 +180,6 @@ class VideoModule extends Component {
                         <div className="col-4">
                             <h2>搜尋條件</h2>
                             <Select
-                                placeholder="選擇"
-                                options={selectOptions}
-                                onChange={this.selectedHandleChange}
-                            />
-                            <Select
                                 placeholder="選擇年份"
                                 options={selectYearOptions}
                             //    onChange={this.selectedHandleChange}
@@ -217,6 +212,11 @@ class VideoModule extends Component {
                                     Apply
                                 </Button>
                             </div>
+                            <Select
+                                placeholder="選擇"
+                                options={selectOptions}
+                                onChange={this.selectedHandleChange}
+                            />
                             <p className="text-center">{selected}</p>
                         </div>
 

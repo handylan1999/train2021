@@ -47616,10 +47616,6 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("h2", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
-        placeholder: "\u9078\u64C7",
-        options: selectOptions,
-        onChange: this.selectedHandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
         placeholder: "\u9078\u64C7\u5E74\u4EFD",
         options: selectYearOptions //    onChange={this.selectedHandleChange}
 
@@ -47647,7 +47643,11 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }, "Clear"), ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_bootstrap_Button__WEBPACK_IMPORTED_MODULE_20__.default, {
         variant: "primary",
         size: "lg"
-      }, "Apply")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("p", {
+      }, "Apply")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
+        placeholder: "\u9078\u64C7",
+        options: selectOptions,
+        onChange: this.selectedHandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("p", {
         className: "text-center"
       }, selected)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col"
