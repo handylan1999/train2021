@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Select from 'react-select';
-import ReactPlayer from 'react-player/youtube';
 import axios from "axios";
 import css from "../scss/video_module.scss";
 
@@ -10,6 +9,7 @@ class VideoModule extends Component {
         super(props);
         this.state = {
             //
+            isToggleOn: true,
             selectYearOptions: [],
             selectGamenameOptions: [],
             selectSchoolOptions: [],
@@ -20,11 +20,16 @@ class VideoModule extends Component {
         };
         //
         this.selectedHandleChange = this.selectedHandleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     // load view on start
     componentDidMount() {
         this.getSelectOptions();
+        this.getSelectYearOptions();
+        this.getSelectGamenameOptions();
+        this.getSelectSchoolOptions();
+        this.getSelectStausOptions();
     }
 
     // Get Data
@@ -42,7 +47,6 @@ class VideoModule extends Component {
             { value: '1', label: 'Home' }
         ]
         this.setState({ selectOptions: options });
-        this.getSelectYearOptions();
     }
 
     // Get Select Year Options
@@ -53,7 +57,6 @@ class VideoModule extends Component {
             { value: '2', label: '2021' }
         ]
         this.setState({ selectYearOptions: options });
-        this.getSelectGamenameOptions();
     }
 
     // Get Select Gamename Options
@@ -64,7 +67,6 @@ class VideoModule extends Component {
             { value: '2', label: '實習盃' }
         ]
         this.setState({ selectGamenameOptions: options });
-        this.getSelectSchoolOptions();
     }
 
     // Get Select School Options
@@ -75,7 +77,6 @@ class VideoModule extends Component {
             { value: '2', label: '政治大學' }
         ]
         this.setState({ selectSchoolOptions: options });
-        this.getSelectStausOptions();
     }
 
     // Get Select Staus Options
@@ -86,6 +87,13 @@ class VideoModule extends Component {
         ]
         this.setState({ selectStausOptions: options });
     }
+
+    async handleSubmit(e) {
+
+        e.preventDefault();
+        console.log('You clicked submit.');
+      }
+
 
     // select Handle Change
     async selectedHandleChange(e) {
@@ -144,6 +152,11 @@ class VideoModule extends Component {
                                 options={selectStausOptions}
                             //    onChange={this.selectedHandleChange}
                             />
+                            <div>
+                                <button type="submit" variant="primary" size="lg">
+                                    Submit
+                                </button>
+                            </div>
                             <p className="text-center">{selected}</p>
                         </div>
 
@@ -184,4 +197,5 @@ export default VideoModule;
 
 if (document.getElementById("video_module")) {
     ReactDOM.render(<VideoModule />, document.getElementById("video_module"));
+    ReactDOM.render(<Toggle />, document.getElementById('root'));
 }
