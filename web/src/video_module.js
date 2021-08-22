@@ -119,6 +119,7 @@ class VideoModule extends Component {
                     <div className="row">
 
                         <div className="col-4">
+                            <h2>主要條件選擇</h2>
                             <Select
                                 placeholder="選擇"
                                 options={selectOptions}
@@ -144,15 +145,7 @@ class VideoModule extends Component {
                                 options={selectStausOptions}
                             //    onChange={this.selectedHandleChange}
                             />
-                            
-                            <div className="mb-4">
-                                <button variant="secondary" size="lg">
-                                    Clear All
-                                </button>{' '}
-                                <button variant="primary" size="lg">
-                                    Submit
-                                </button>
-                            </div>
+                            <h2>附加條件選擇</h2>
                             <div className="mb-4">
                                 <button variant="secondary" size="lg">
                                     Clear All
