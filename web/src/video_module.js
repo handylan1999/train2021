@@ -15,6 +15,7 @@ class VideoModule extends Component {
             selectGamenameOptions: [],
             selectSchoolOptions: [],
             selectStausOptions: [],
+            selectGroupOptions: [],
             selectOptions: [],
             gameAllData:[],
             selected: ""
@@ -30,6 +31,7 @@ class VideoModule extends Component {
         this.getSelectGamenameOptions();
         this.getSelectSchoolOptions();
         this.getSelectStausOptions();
+        this.getSelectGroupOptions();
     }
 
     // Get Data
@@ -88,6 +90,61 @@ class VideoModule extends Component {
         this.setState({ selectStausOptions: options });
     }
 
+    // Get Select Group Options
+    async getSelectGroupOptions() {
+        const options = [
+            {
+                label: "禁區",
+                options: [
+                  { value: "value_1", label: "HIGH LOW" },
+                  { value: "value_2", label: "LOW POST" }
+                ]
+            },
+            {
+                label: "擋拆",
+                options: [
+                  { value: "value_3", label: "Pick and Roll" },
+                  { value: "value_4", label: "Pick and Pop" },
+                  { value: "value_5", label: "Screen" },
+                  { value: "value_6", label: "Double Screen" }
+                ]
+            },
+            {
+                label: "空手切",
+                options: [
+                  { value: "value_7", label: "Back Door" },
+                  { value: "value_8", label: "Give and Go" }
+                ]
+            },
+            {
+                label: "全場防守",
+                options: [
+                  { value: "value_1", label: "全場大3-2" },
+                  { value: "value_2", label: "全場大2-2-1" },
+                  { value: "value_3", label: "全場盯人" },
+                  { value: "value_4", label: "全場大1盯4" },
+                  { value: "value_5", label: "全場包夾" }
+                ]
+            },
+            {
+                label: "半場防守",
+                options: [
+                  { value: "value_5", label: "半場盯人" },
+                  { value: "value_6", label: "半場包夾" }
+                ]
+            },
+            {
+                label: "陣地防守",
+                options: [
+                  { value: "value_7", label: "2-3區域" },
+                  { value: "value_8", label: "3-2區域" },
+                  { value: "value_9", label: "1-3-1區域" }
+                ]
+            }
+            ]
+            this.setState({ selectGroupOptions: options });
+    }
+
     // select Handle Change
     async selectedHandleChange(e) {
 
@@ -109,6 +166,7 @@ class VideoModule extends Component {
             selectGamenameOptions,
             selectSchoolOptions,
             selectStausOptions,
+            selectGroupOptions,
             selectOptions,
             selected,
             gameAllData
@@ -146,13 +204,17 @@ class VideoModule extends Component {
                                 options={selectStausOptions}
                             //    onChange={this.selectedHandleChange}
                             />
-                            <h2>附加條件</h2>
+                            <Select
+                                placeholder="選擇戰術"
+                                options={selectGroupOptions}
+                            //    onChange={this.selectedHandleChange}
+                            />
                             <div className="mb-4">
                                 <Button variant="secondary" size="lg">
-                                    Clear All
+                                    Clear
                                 </Button>{' '}
                                 <Button variant="primary" size="lg">
-                                    Submit
+                                    Apply
                                 </Button>
                             </div>
                             <p className="text-center">{selected}</p>

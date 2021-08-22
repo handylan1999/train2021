@@ -47215,6 +47215,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       selectGamenameOptions: [],
       selectSchoolOptions: [],
       selectStausOptions: [],
+      selectGroupOptions: [],
       selectOptions: [],
       gameAllData: [],
       selected: ""
@@ -47233,6 +47234,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       this.getSelectGamenameOptions();
       this.getSelectSchoolOptions();
       this.getSelectStausOptions();
+      this.getSelectGroupOptions();
     } // Get Data
 
   }, {
@@ -47454,17 +47456,118 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }
 
       return getSelectStausOptions;
+    }() // Get Select Group Options
+
+  }, {
+    key: "getSelectGroupOptions",
+    value: function () {
+      var _getSelectGroupOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+        var options;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                options = [{
+                  label: "禁區",
+                  options: [{
+                    value: "value_1",
+                    label: "HIGH LOW"
+                  }, {
+                    value: "value_2",
+                    label: "LOW POST"
+                  }]
+                }, {
+                  label: "擋拆",
+                  options: [{
+                    value: "value_3",
+                    label: "Pick and Roll"
+                  }, {
+                    value: "value_4",
+                    label: "Pick and Pop"
+                  }, {
+                    value: "value_5",
+                    label: "Screen"
+                  }, {
+                    value: "value_6",
+                    label: "Double Screen"
+                  }]
+                }, {
+                  label: "空手切",
+                  options: [{
+                    value: "value_7",
+                    label: "Back Door"
+                  }, {
+                    value: "value_8",
+                    label: "Give and Go"
+                  }]
+                }, {
+                  label: "全場防守",
+                  options: [{
+                    value: "value_1",
+                    label: "全場大3-2"
+                  }, {
+                    value: "value_2",
+                    label: "全場大2-2-1"
+                  }, {
+                    value: "value_3",
+                    label: "全場盯人"
+                  }, {
+                    value: "value_4",
+                    label: "全場大1盯4"
+                  }, {
+                    value: "value_5",
+                    label: "全場包夾"
+                  }]
+                }, {
+                  label: "半場防守",
+                  options: [{
+                    value: "value_5",
+                    label: "半場盯人"
+                  }, {
+                    value: "value_6",
+                    label: "半場包夾"
+                  }]
+                }, {
+                  label: "陣地防守",
+                  options: [{
+                    value: "value_7",
+                    label: "2-3區域"
+                  }, {
+                    value: "value_8",
+                    label: "3-2區域"
+                  }, {
+                    value: "value_9",
+                    label: "1-3-1區域"
+                  }]
+                }];
+                this.setState({
+                  selectGroupOptions: options
+                });
+
+              case 2:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+
+      function getSelectGroupOptions() {
+        return _getSelectGroupOptions.apply(this, arguments);
+      }
+
+      return getSelectGroupOptions;
     }() // select Handle Change
 
   }, {
     key: "selectedHandleChange",
     value: function () {
-      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
         var selected, _selected;
 
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 this.getGameAllData(e.label);
 
@@ -47482,10 +47585,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 2:
               case "end":
-                return _context7.stop();
+                return _context8.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee8, this);
       }));
 
       function selectedHandleChange(_x2) {
@@ -47502,6 +47605,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
           selectGamenameOptions = _this$state.selectGamenameOptions,
           selectSchoolOptions = _this$state.selectSchoolOptions,
           selectStausOptions = _this$state.selectStausOptions,
+          selectGroupOptions = _this$state.selectGroupOptions,
           selectOptions = _this$state.selectOptions,
           selected = _this$state.selected,
           gameAllData = _this$state.gameAllData;
@@ -47531,15 +47635,19 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         placeholder: "\u9032\u653B/\u9632\u5B88",
         options: selectStausOptions //    onChange={this.selectedHandleChange}
 
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("h2", null, "\u9644\u52A0\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_19__.default, {
+        placeholder: "\u9078\u64C7\u6230\u8853",
+        options: selectGroupOptions //    onChange={this.selectedHandleChange}
+
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "mb-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_bootstrap_Button__WEBPACK_IMPORTED_MODULE_20__.default, {
         variant: "secondary",
         size: "lg"
-      }, "Clear All"), ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_bootstrap_Button__WEBPACK_IMPORTED_MODULE_20__.default, {
+      }, "Clear"), ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_bootstrap_Button__WEBPACK_IMPORTED_MODULE_20__.default, {
         variant: "primary",
         size: "lg"
-      }, "Submit")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("p", {
+      }, "Apply")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("p", {
         className: "text-center"
       }, selected)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
         className: "col"
