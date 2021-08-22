@@ -10,7 +10,6 @@ class VideoModule extends Component {
         super(props);
         this.state = {
             //
-            isToggleOn: true,
             selectYearOptions: [],
             selectGamenameOptions: [],
             selectSchoolOptions: [],
