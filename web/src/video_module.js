@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Select from 'react-select';
 import axios from "axios";
 import ReactPlayer from "react-player";
+import Button from 'react-bootstrap/Button';
 import css from "../scss/video_module.scss";
 
 class VideoModule extends Component {
@@ -147,12 +148,12 @@ class VideoModule extends Component {
                             />
                             <h2>附加條件選擇</h2>
                             <div className="mb-4">
-                                <button variant="secondary" size="lg">
+                                <Button variant="secondary" size="lg">
                                     Clear All
-                                </button>{' '}
-                                <button variant="primary" size="lg">
+                                </Button>{' '}
+                                <Button variant="primary" size="lg">
                                     Submit
-                                </button>
+                                </Button>
                             </div>
                             <p className="text-center">{selected}</p>
                         </div>
