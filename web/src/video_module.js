@@ -156,7 +156,7 @@ class VideoModule extends Component {
                             <div className="mb-2">
                                 <button variant="secondary" size="lg">
                                     Clear
-                                </button>
+                                </button>{' '}
                                 <button variant="primary" size="lg">
                                     Submit
                                 </button>
