@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Select from 'react-select';
 import axios from "axios";
-import ReactPlayer from "react-player/youtube";
+import ReactPlayer from "react-player";
 import Button from 'react-bootstrap/Button';
 import css from "../scss/video_module.scss";
 
