@@ -222,7 +222,7 @@ class VideoModule extends Component {
 
                         <div className="col">
                             <ReactPlayer
-                                url='https://www.youtube.com/watch?v=keaQoWIlizY'
+                                url='https://www.youtube.com/watch?v=yUm6VbWetMA'
                                 controls={true}
                             />
                             <p className="text-center">2020UBA冠軍戰::單場精華:政治大學 - 世新大學</p>
