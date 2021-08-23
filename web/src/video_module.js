@@ -222,7 +222,7 @@ class VideoModule extends Component {
 
                         <div className="col">
                             <ReactPlayer
-                                url='https://www.youtube.com/watch?v=zVVUuHly24c'
+                                url='https://www.youtube.com/watch?v=yUm6VbWetMA'
                                 controls={true}
                             />
                             <table className="table table-striped">
