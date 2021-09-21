@@ -14,23 +14,30 @@ class VideoModule extends Component {
         this.state = {
             //
             selectYearOptions: [],
-            selectGamenameOptions: [],
-            selectSchoolOptions: [],
-            selectStausOptions: [],
-            selectGroupOptions: [],
+            selectGameOptions: [],
+            selectTeamOptions: [],
+            selectNameOptions: [],
             selectEventOptions: [],
             selectOptions: [],
             gameAllData:[],
             videoUrl: "",
             selected: "",
+            Yearselected: "",
+            Yearalldata: [],
+            Gameselected: "",
+            Teamselected: "",
+            Nameselected: "",
             Eventselected: "",
-            Playerselected: "",
+            VideoHash: "",
             value: ""
         };
         //
         this.selectedHandleChange = this.selectedHandleChange.bind(this);
+        this.YearhandleChange = this.YearhandleChange.bind(this);
+        this.GamehandleChange = this.GamehandleChange.bind(this);
+        this.TeamhandleChange = this.TeamhandleChange.bind(this);
+        this.NamehandleChange = this.NamehandleChange.bind(this);
         this.EventhandleChange = this.EventhandleChange.bind(this);
-        this.PlayerhandleChange = this.PlayerhandleChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -38,13 +45,13 @@ class VideoModule extends Component {
     // load view on start
     componentDidMount() {
         this.getSelectYearOptions();
-        this.getSelectGamenameOptions();
-        this.getSelectSchoolOptions();
-        this.getSelectStausOptions();
-        this.getSelectPlayernameOptions();
-        this.getSelectGroupOptions();
-        this.getSelectEventOptions();
-        this.getSelectOptions();
+        // this.getSelectGameOptions();
+        // this.getSelectTeamOptions();
+        // this.getSelectStausOptions();
+        // this.getSelectPlayernameOptions();
+        // this.getSelectGroupOptions();
+        // this.getSelectEventOptions();
+        // this.getSelectOptions();
     }
 
     // Get Select Year Options
@@ -55,7 +62,7 @@ class VideoModule extends Component {
         //     { value: '2', label: '2021' }
         // ]
 
-        const dataApiUrl = ("/list");
+        const dataApiUrl = ("/yearlist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
@@ -68,14 +75,14 @@ class VideoModule extends Component {
     }
 
     // Get Select Gamename Options
-    async getSelectGamenameOptions() {
+    async getSelectGameOptions() {
         // const options = [
         //     { value: '0', label: 'UBA預賽' },
         //     { value: '1', label: '友誼賽' },
         //     { value: '2', label: '實習盃' }
         // ]
 
-        const dataApiUrl = ("/list");
+        const dataApiUrl = ("/gamelist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
@@ -84,18 +91,18 @@ class VideoModule extends Component {
             label: dd.Game,
         }))
 
-        this.setState({ selectGamenameOptions: options });
+        this.setState({ selectGameOptions: options });
     }
 
     // Get Select School Options
-    async getSelectSchoolOptions() {
+    async getSelectTeamOptions() {
         // const options = [
         //     { value: '0', label: '台灣體大' },
         //     { value: '1', label: '世新大學' },
         //     { value: '2', label: '政治大學' }
         // ]
 
-        const dataApiUrl = ("/list");
+        const dataApiUrl = ("/teamlist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
@@ -104,22 +111,14 @@ class VideoModule extends Component {
             label: dd.Team,
         }))
 
-        this.setState({ selectSchoolOptions: options });
+        this.setState({ selectTeamOptions: options });
     }
 
-    // Get Select Staus Options
-    async getSelectStausOptions() {
-        const options = [
-            { value: '0', label: '進攻' },
-            { value: '1', label: '防守' }
-        ]
-        this.setState({ selectStausOptions: options });
-    }
 
     // Get Select Playername Options
     async getSelectPlayernameOptions() {
 
-        const dataApiUrl = ("/list");
+        const dataApiUrl = ("/namelist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
@@ -192,7 +191,7 @@ class VideoModule extends Component {
     async getSelectEventOptions() {
 
 
-        const dataApiUrl = ("/list");
+        const dataApiUrl = ("/eventlist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
@@ -215,13 +214,13 @@ class VideoModule extends Component {
     // Get Select Options
     async getSelectOptions() {
 
-        const dataApiUrl = ("/file");
+        const dataApiUrl = ("/hashlist");
         const res = await axios.get(dataApiUrl);
         const data = res.data;
 
         const options = data.map((d, index) => ({
             value: index,
-            label: d,
+            label: d.VideoHash,
         }));
 
         // const options = [
@@ -236,9 +235,9 @@ class VideoModule extends Component {
     // select Handle Change
     async selectedHandleChange(e) {
 
-        this.getGameAllData(e.label)
-
-        const videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label
+        // this.EventhandleChange(e.label)
+        console.log(this.setState.selectOptions)
+        const videoUrl = 'https://drive.google.com/uc?export=preview&id=' + e.value
         console.log(videoUrl)
         this.setState({videoUrl:videoUrl})
 
@@ -254,13 +253,102 @@ class VideoModule extends Component {
         // }
     }
 
-
-    async PlayerhandleChange(e){
+    async YearhandleChange(e){
 
         console.log('handleChange:',e);
         console.log('input:', e.label);
 
-        this.setState({Playerselected: e.label});
+        
+        const dataApiUrl = ("/yearfilter");
+        const res = await axios.post(dataApiUrl, { 'label': e.label});
+        const data = res.data;
+        console.log(data);
+        this.setState({Yearselected: e.label});
+
+        const options = data.Yearresult.map((dd, index) => ({
+            value: index,
+            label: dd.Game,
+        }))
+
+        const set = new Set();
+        const result = options.filter(item => !set.has(item.label) ? set.add(item.label) : false);
+        console.log(result); 
+
+        this.setState({ selectGameOptions: result });
+
+    }
+
+    async GamehandleChange(e){
+
+        const dataApiUrl = ("/gamefilter");
+        const res = await axios.post(dataApiUrl, { 'Year': this.state.Yearselected, 'label': e.label});
+        const data = res.data;
+        console.log(data);
+
+        console.log('handleChange:',e);
+        console.log('input:', e.label);
+
+        const options = data.Gameresult.map((dd, index) => ({
+            value: index,
+            label: dd.Team,
+        }))
+
+        const set = new Set();
+        const result = options.filter(item => !set.has(item.label) ? set.add(item.label) : false);
+        console.log(result); 
+
+        this.setState({ selectTeamOptions: result });
+        this.setState({ Gameselected: e.label});
+
+
+    }
+
+    async TeamhandleChange(e){
+
+        const dataApiUrl = ("/teamfilter");
+        const res = await axios.post(dataApiUrl, { 'Year': this.state.Yearselected, 'Game': this.state.Gameselected,'label': e.label});
+        const data = res.data;
+        console.log(data);
+
+        console.log('handleChange:',e);
+        console.log('input:', e.label);
+
+        const options = data.Teamresult.map((dd, index) => ({
+            value: index,
+            label: dd.Name,
+        }))
+
+        const set = new Set();
+        const result = options.filter(item => !set.has(item.label) ? set.add(item.label) : false);
+        console.log(result); 
+
+        this.setState({ selectNameOptions: result });
+        this.setState({ Teamselected: e.label});
+
+    }
+
+
+    async NamehandleChange(e){
+
+        const dataApiUrl = ("/namefilter");
+        const res = await axios.post(dataApiUrl, { 'Year': this.state.Yearselected, 'Game': this.state.Gameselected, 'Team': this.state.Teamselected,'label': e.label});
+        const data = res.data;
+        console.log(data);
+
+        console.log('handleChange:',e);
+        console.log('input:', e.label);
+
+        const options = data.Nameresult.map((dd, index) => ({
+            value: index,
+            label: dd.Event,
+        }))
+
+        const set = new Set();
+        const result = options.filter(item => !set.has(item.label) ? set.add(item.label) : false);
+        console.log(result); 
+
+        this.setState({ selectEventOptions: result });
+        this.setState({ Nameselected: e.label});
 
     }
 
@@ -270,19 +358,16 @@ class VideoModule extends Component {
         console.log('handleChange:',e);
         console.log('input:', e.label);
 
-        this.setState({Eventselected: e.label});
-        const dataApiUrl = ("/find-videos");
-        const res = await axios.post(dataApiUrl, { 'label': e.label,  'label1': this.state.Playerselected});
+        const dataApiUrl = ("/hashlist");
+        const res = await axios.post(dataApiUrl, { 'Event': e.label, 'Year': this.state.Yearselected,'Game': this.state.Gameselected,'Team': this.state.Teamselected,'Name': this.state.Nameselected});
         const data = res.data;
         console.log(data);
-
-        const options = data.map((d, index) => ({
-            value: index,
-            label: d.FullCorrectFileName,
-        }));
+        const options = data.Allresult.map((dd, index) => ({
+                    value: dd.VideoHash,
+                    label: dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter,
+                }))
 
         this.setState({ selectOptions: options });
-        // this.setState({value: Number(e.target.value)+1});
 
     }
 
@@ -314,10 +399,10 @@ class VideoModule extends Component {
 
         const {
             selectYearOptions,
-            selectGamenameOptions,
-            selectSchoolOptions,
+            selectGameOptions,
+            selectTeamOptions,
             selectStausOptions,
-            selectPlayernameOptions,
+            selectNameOptions,
             selectGroupOptions,
             selectEventOptions,
             selectOptions,
@@ -336,17 +421,17 @@ class VideoModule extends Component {
                                 <Select className="mb-2"
                                     placeholder="選擇年份"
                                     options={selectYearOptions}
-                                //    onChange={this.selectedHandleChange}
+                                   onChange={this.YearhandleChange}
                                 />
                                 <Select className="mb-2"
                                     placeholder="選擇盃賽"
-                                    options={selectGamenameOptions}
-                                //    onChange={this.selectedHandleChange}
+                                    options={selectGameOptions}
+                                   onChange={this.GamehandleChange}
                                 />
                                 <Select className="mb-2"
                                     placeholder="選擇學校"
-                                    options={selectSchoolOptions}
-                                //    onChange={this.selectedHandleChange}
+                                    options={selectTeamOptions}
+                                   onChange={this.TeamhandleChange}
                                 />
                                 {/* <Select
                                     placeholder="進攻/防守"
@@ -355,8 +440,8 @@ class VideoModule extends Component {
                                 /> */}
                                 <Select className="mb-2"
                                     placeholder="選擇球員"
-                                    options={selectPlayernameOptions}
-                                   onChange={this.PlayerhandleChange}
+                                    options={selectNameOptions}
+                                   onChange={this.NamehandleChange}
                                 />
                                 {/* <Select
                                     placeholder="選擇戰術"

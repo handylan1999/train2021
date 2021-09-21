@@ -4513,6 +4513,257 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_collection-strong.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/_collection-strong.js ***!
+  \************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
+var create = __webpack_require__(/*! ./_object-create */ "./node_modules/core-js/modules/_object-create.js");
+var redefineAll = __webpack_require__(/*! ./_redefine-all */ "./node_modules/core-js/modules/_redefine-all.js");
+var ctx = __webpack_require__(/*! ./_ctx */ "./node_modules/core-js/modules/_ctx.js");
+var anInstance = __webpack_require__(/*! ./_an-instance */ "./node_modules/core-js/modules/_an-instance.js");
+var forOf = __webpack_require__(/*! ./_for-of */ "./node_modules/core-js/modules/_for-of.js");
+var $iterDefine = __webpack_require__(/*! ./_iter-define */ "./node_modules/core-js/modules/_iter-define.js");
+var step = __webpack_require__(/*! ./_iter-step */ "./node_modules/core-js/modules/_iter-step.js");
+var setSpecies = __webpack_require__(/*! ./_set-species */ "./node_modules/core-js/modules/_set-species.js");
+var DESCRIPTORS = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js");
+var fastKey = __webpack_require__(/*! ./_meta */ "./node_modules/core-js/modules/_meta.js").fastKey;
+var validate = __webpack_require__(/*! ./_validate-collection */ "./node_modules/core-js/modules/_validate-collection.js");
+var SIZE = DESCRIPTORS ? '_s' : 'size';
+
+var getEntry = function (that, key) {
+  // fast case
+  var index = fastKey(key);
+  var entry;
+  if (index !== 'F') return that._i[index];
+  // frozen object case
+  for (entry = that._f; entry; entry = entry.n) {
+    if (entry.k == key) return entry;
+  }
+};
+
+module.exports = {
+  getConstructor: function (wrapper, NAME, IS_MAP, ADDER) {
+    var C = wrapper(function (that, iterable) {
+      anInstance(that, C, NAME, '_i');
+      that._t = NAME;         // collection type
+      that._i = create(null); // index
+      that._f = undefined;    // first entry
+      that._l = undefined;    // last entry
+      that[SIZE] = 0;         // size
+      if (iterable != undefined) forOf(iterable, IS_MAP, that[ADDER], that);
+    });
+    redefineAll(C.prototype, {
+      // 23.1.3.1 Map.prototype.clear()
+      // 23.2.3.2 Set.prototype.clear()
+      clear: function clear() {
+        for (var that = validate(this, NAME), data = that._i, entry = that._f; entry; entry = entry.n) {
+          entry.r = true;
+          if (entry.p) entry.p = entry.p.n = undefined;
+          delete data[entry.i];
+        }
+        that._f = that._l = undefined;
+        that[SIZE] = 0;
+      },
+      // 23.1.3.3 Map.prototype.delete(key)
+      // 23.2.3.4 Set.prototype.delete(value)
+      'delete': function (key) {
+        var that = validate(this, NAME);
+        var entry = getEntry(that, key);
+        if (entry) {
+          var next = entry.n;
+          var prev = entry.p;
+          delete that._i[entry.i];
+          entry.r = true;
+          if (prev) prev.n = next;
+          if (next) next.p = prev;
+          if (that._f == entry) that._f = next;
+          if (that._l == entry) that._l = prev;
+          that[SIZE]--;
+        } return !!entry;
+      },
+      // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+      // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
+      forEach: function forEach(callbackfn /* , that = undefined */) {
+        validate(this, NAME);
+        var f = ctx(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3);
+        var entry;
+        while (entry = entry ? entry.n : this._f) {
+          f(entry.v, entry.k, this);
+          // revert to the last existing entry
+          while (entry && entry.r) entry = entry.p;
+        }
+      },
+      // 23.1.3.7 Map.prototype.has(key)
+      // 23.2.3.7 Set.prototype.has(value)
+      has: function has(key) {
+        return !!getEntry(validate(this, NAME), key);
+      }
+    });
+    if (DESCRIPTORS) dP(C.prototype, 'size', {
+      get: function () {
+        return validate(this, NAME)[SIZE];
+      }
+    });
+    return C;
+  },
+  def: function (that, key, value) {
+    var entry = getEntry(that, key);
+    var prev, index;
+    // change existing entry
+    if (entry) {
+      entry.v = value;
+    // create new entry
+    } else {
+      that._l = entry = {
+        i: index = fastKey(key, true), // <- index
+        k: key,                        // <- key
+        v: value,                      // <- value
+        p: prev = that._l,             // <- previous entry
+        n: undefined,                  // <- next entry
+        r: false                       // <- removed
+      };
+      if (!that._f) that._f = entry;
+      if (prev) prev.n = entry;
+      that[SIZE]++;
+      // add to index
+      if (index !== 'F') that._i[index] = entry;
+    } return that;
+  },
+  getEntry: getEntry,
+  setStrong: function (C, NAME, IS_MAP) {
+    // add .keys, .values, .entries, [@@iterator]
+    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
+    $iterDefine(C, NAME, function (iterated, kind) {
+      this._t = validate(iterated, NAME); // target
+      this._k = kind;                     // kind
+      this._l = undefined;                // previous
+    }, function () {
+      var that = this;
+      var kind = that._k;
+      var entry = that._l;
+      // revert to the last existing entry
+      while (entry && entry.r) entry = entry.p;
+      // get next entry
+      if (!that._t || !(that._l = entry = entry ? entry.n : that._t._f)) {
+        // or finish the iteration
+        that._t = undefined;
+        return step(1);
+      }
+      // return step by kind
+      if (kind == 'keys') return step(0, entry.k);
+      if (kind == 'values') return step(0, entry.v);
+      return step(0, [entry.k, entry.v]);
+    }, IS_MAP ? 'entries' : 'values', !IS_MAP, true);
+
+    // add [@@species], 23.1.2.2, 23.2.2.2
+    setSpecies(NAME);
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_collection.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_collection.js ***!
+  \*****************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var redefine = __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js");
+var redefineAll = __webpack_require__(/*! ./_redefine-all */ "./node_modules/core-js/modules/_redefine-all.js");
+var meta = __webpack_require__(/*! ./_meta */ "./node_modules/core-js/modules/_meta.js");
+var forOf = __webpack_require__(/*! ./_for-of */ "./node_modules/core-js/modules/_for-of.js");
+var anInstance = __webpack_require__(/*! ./_an-instance */ "./node_modules/core-js/modules/_an-instance.js");
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
+var $iterDetect = __webpack_require__(/*! ./_iter-detect */ "./node_modules/core-js/modules/_iter-detect.js");
+var setToStringTag = __webpack_require__(/*! ./_set-to-string-tag */ "./node_modules/core-js/modules/_set-to-string-tag.js");
+var inheritIfRequired = __webpack_require__(/*! ./_inherit-if-required */ "./node_modules/core-js/modules/_inherit-if-required.js");
+
+module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
+  var Base = global[NAME];
+  var C = Base;
+  var ADDER = IS_MAP ? 'set' : 'add';
+  var proto = C && C.prototype;
+  var O = {};
+  var fixMethod = function (KEY) {
+    var fn = proto[KEY];
+    redefine(proto, KEY,
+      KEY == 'delete' ? function (a) {
+        return IS_WEAK && !isObject(a) ? false : fn.call(this, a === 0 ? 0 : a);
+      } : KEY == 'has' ? function has(a) {
+        return IS_WEAK && !isObject(a) ? false : fn.call(this, a === 0 ? 0 : a);
+      } : KEY == 'get' ? function get(a) {
+        return IS_WEAK && !isObject(a) ? undefined : fn.call(this, a === 0 ? 0 : a);
+      } : KEY == 'add' ? function add(a) { fn.call(this, a === 0 ? 0 : a); return this; }
+        : function set(a, b) { fn.call(this, a === 0 ? 0 : a, b); return this; }
+    );
+  };
+  if (typeof C != 'function' || !(IS_WEAK || proto.forEach && !fails(function () {
+    new C().entries().next();
+  }))) {
+    // create collection constructor
+    C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
+    redefineAll(C.prototype, methods);
+    meta.NEED = true;
+  } else {
+    var instance = new C();
+    // early implementations not supports chaining
+    var HASNT_CHAINING = instance[ADDER](IS_WEAK ? {} : -0, 1) != instance;
+    // V8 ~  Chromium 40- weak-collections throws on primitives, but should return false
+    var THROWS_ON_PRIMITIVES = fails(function () { instance.has(1); });
+    // most early implementations doesn't supports iterables, most modern - not close it correctly
+    var ACCEPT_ITERABLES = $iterDetect(function (iter) { new C(iter); }); // eslint-disable-line no-new
+    // for early implementations -0 and +0 not the same
+    var BUGGY_ZERO = !IS_WEAK && fails(function () {
+      // V8 ~ Chromium 42- fails only with 5+ elements
+      var $instance = new C();
+      var index = 5;
+      while (index--) $instance[ADDER](index, index);
+      return !$instance.has(-0);
+    });
+    if (!ACCEPT_ITERABLES) {
+      C = wrapper(function (target, iterable) {
+        anInstance(target, C, NAME);
+        var that = inheritIfRequired(new Base(), target, C);
+        if (iterable != undefined) forOf(iterable, IS_MAP, that[ADDER], that);
+        return that;
+      });
+      C.prototype = proto;
+      proto.constructor = C;
+    }
+    if (THROWS_ON_PRIMITIVES || BUGGY_ZERO) {
+      fixMethod('delete');
+      fixMethod('has');
+      IS_MAP && fixMethod('get');
+    }
+    if (BUGGY_ZERO || HASNT_CHAINING) fixMethod(ADDER);
+    // weak collections should not contains .clear method
+    if (IS_WEAK && proto.clear) delete proto.clear;
+  }
+
+  setToStringTag(C, NAME);
+
+  O[NAME] = C;
+  $export($export.G + $export.W + $export.F * (C != Base), O);
+
+  if (!IS_WEAK) common.setStrong(C, NAME, IS_MAP);
+
+  return C;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_core.js":
 /*!***********************************************!*\
   !*** ./node_modules/core-js/modules/_core.js ***!
@@ -4825,6 +5076,25 @@ module.exports = document && document.documentElement;
 module.exports = !__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && !__webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () {
   return Object.defineProperty(__webpack_require__(/*! ./_dom-create */ "./node_modules/core-js/modules/_dom-create.js")('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_inherit-if-required.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/_inherit-if-required.js ***!
+  \**************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var setPrototypeOf = __webpack_require__(/*! ./_set-proto */ "./node_modules/core-js/modules/_set-proto.js").set;
+module.exports = function (that, target, C) {
+  var S = target.constructor;
+  var P;
+  if (S !== C && typeof S == 'function' && (P = S.prototype) !== C.prototype && isObject(P) && setPrototypeOf) {
+    setPrototypeOf(that, P);
+  } return that;
+};
 
 
 /***/ }),
@@ -6079,6 +6349,21 @@ module.exports = navigator && navigator.userAgent || '';
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_validate-collection.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/_validate-collection.js ***!
+  \**************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+module.exports = function (it, TYPE) {
+  if (!isObject(it) || it._t !== TYPE) throw TypeError('Incompatible receiver, ' + TYPE + ' required!');
+  return it;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_wks-define.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/modules/_wks-define.js ***!
@@ -6144,6 +6429,27 @@ module.exports = __webpack_require__(/*! ./_core */ "./node_modules/core-js/modu
     || it['@@iterator']
     || Iterators[classof(it)];
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.array.filter.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.array.filter.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var $filter = __webpack_require__(/*! ./_array-methods */ "./node_modules/core-js/modules/_array-methods.js")(2);
+
+$export($export.P + $export.F * !__webpack_require__(/*! ./_strict-method */ "./node_modules/core-js/modules/_strict-method.js")([].filter, true), 'Array', {
+  // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
+  filter: function filter(callbackfn /* , thisArg */) {
+    return $filter(this, callbackfn, arguments[1]);
+  }
+});
 
 
 /***/ }),
@@ -6657,6 +6963,31 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
     return isObject(result) ? result : instance;
   }
 });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.set.js":
+/*!*************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.set.js ***!
+  \*************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+var strong = __webpack_require__(/*! ./_collection-strong */ "./node_modules/core-js/modules/_collection-strong.js");
+var validate = __webpack_require__(/*! ./_validate-collection */ "./node_modules/core-js/modules/_validate-collection.js");
+var SET = 'Set';
+
+// 23.2 Set Objects
+module.exports = __webpack_require__(/*! ./_collection */ "./node_modules/core-js/modules/_collection.js")(SET, function (get) {
+  return function Set() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
+}, {
+  // 23.2.3.1 Set.prototype.add(value)
+  add: function add(value) {
+    return strong.def(validate(this, SET), value = value === 0 ? 0 : value, value);
+  }
+}, strong);
 
 
 /***/ }),
@@ -50104,37 +50435,41 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_function_bind_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_bind_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_array_map_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.map.js */ "./node_modules/core-js/modules/es6.array.map.js");
 /* harmony import */ var core_js_modules_es6_array_map_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_map_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.object.set-prototype-of.js */ "./node_modules/core-js/modules/es6.object.set-prototype-of.js");
-/* harmony import */ var core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.object.get-prototype-of.js */ "./node_modules/core-js/modules/es6.object.get-prototype-of.js");
-/* harmony import */ var core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.reflect.construct.js */ "./node_modules/core-js/modules/es6.reflect.construct.js");
-/* harmony import */ var core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.object.create.js */ "./node_modules/core-js/modules/es6.object.create.js");
-/* harmony import */ var core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.object.define-property.js */ "./node_modules/core-js/modules/es6.object.define-property.js");
-/* harmony import */ var core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es6.object.to-string.js */ "./node_modules/core-js/modules/es6.object.to-string.js");
-/* harmony import */ var core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es6.promise.js */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es6.symbol.js */ "./node_modules/core-js/modules/es6.symbol.js");
-/* harmony import */ var core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es6.string.iterator.js */ "./node_modules/core-js/modules/es6.string.iterator.js");
-/* harmony import */ var core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es6.array.iterator.js */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/web.dom.iterable.js */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _scss_video_module_scss__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../scss/video_module.scss */ "./scss/video_module.scss");
-/* harmony import */ var _clock_jsx__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./clock.jsx */ "./src/clock.jsx");
-/* harmony import */ var react_player__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react-player */ "./node_modules/react-player/lib/index.js");
-/* harmony import */ var _videocard_jsx__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./videocard.jsx */ "./src/videocard.jsx");
+/* harmony import */ var core_js_modules_es6_set_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.set.js */ "./node_modules/core-js/modules/es6.set.js");
+/* harmony import */ var core_js_modules_es6_set_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_set_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.string.iterator.js */ "./node_modules/core-js/modules/es6.string.iterator.js");
+/* harmony import */ var core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.object.to-string.js */ "./node_modules/core-js/modules/es6.object.to-string.js");
+/* harmony import */ var core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.array.iterator.js */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/web.dom.iterable.js */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var core_js_modules_es6_array_filter_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es6.array.filter.js */ "./node_modules/core-js/modules/es6.array.filter.js");
+/* harmony import */ var core_js_modules_es6_array_filter_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_filter_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es6.object.set-prototype-of.js */ "./node_modules/core-js/modules/es6.object.set-prototype-of.js");
+/* harmony import */ var core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_set_prototype_of_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es6.object.get-prototype-of.js */ "./node_modules/core-js/modules/es6.object.get-prototype-of.js");
+/* harmony import */ var core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_get_prototype_of_js__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es6.reflect.construct.js */ "./node_modules/core-js/modules/es6.reflect.construct.js");
+/* harmony import */ var core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_reflect_construct_js__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es6.object.create.js */ "./node_modules/core-js/modules/es6.object.create.js");
+/* harmony import */ var core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_create_js__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/es6.object.define-property.js */ "./node_modules/core-js/modules/es6.object.define-property.js");
+/* harmony import */ var core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_define_property_js__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! core-js/modules/es6.promise.js */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise_js__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es6.symbol.js */ "./node_modules/core-js/modules/es6.symbol.js");
+/* harmony import */ var core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol_js__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var _scss_video_module_scss__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../scss/video_module.scss */ "./scss/video_module.scss");
+/* harmony import */ var _clock_jsx__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./clock.jsx */ "./src/clock.jsx");
+/* harmony import */ var react_player__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react-player */ "./node_modules/react-player/lib/index.js");
+/* harmony import */ var _videocard_jsx__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./videocard.jsx */ "./src/videocard.jsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
@@ -50142,6 +50477,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
 
 
 
@@ -50201,23 +50538,30 @@ var VideoModule = /*#__PURE__*/function (_Component) {
     _this.state = {
       //
       selectYearOptions: [],
-      selectGamenameOptions: [],
-      selectSchoolOptions: [],
-      selectStausOptions: [],
-      selectGroupOptions: [],
+      selectGameOptions: [],
+      selectTeamOptions: [],
+      selectNameOptions: [],
       selectEventOptions: [],
       selectOptions: [],
       gameAllData: [],
       videoUrl: "",
       selected: "",
+      Yearselected: "",
+      Yearalldata: [],
+      Gameselected: "",
+      Teamselected: "",
+      Nameselected: "",
       Eventselected: "",
-      Playerselected: "",
+      VideoHash: "",
       value: ""
     }; //
 
     _this.selectedHandleChange = _this.selectedHandleChange.bind(_assertThisInitialized(_this));
+    _this.YearhandleChange = _this.YearhandleChange.bind(_assertThisInitialized(_this));
+    _this.GamehandleChange = _this.GamehandleChange.bind(_assertThisInitialized(_this));
+    _this.TeamhandleChange = _this.TeamhandleChange.bind(_assertThisInitialized(_this));
+    _this.NamehandleChange = _this.NamehandleChange.bind(_assertThisInitialized(_this));
     _this.EventhandleChange = _this.EventhandleChange.bind(_assertThisInitialized(_this));
-    _this.PlayerhandleChange = _this.PlayerhandleChange.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     return _this;
@@ -50227,14 +50571,13 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   _createClass(VideoModule, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.getSelectYearOptions();
-      this.getSelectGamenameOptions();
-      this.getSelectSchoolOptions();
-      this.getSelectStausOptions();
-      this.getSelectPlayernameOptions();
-      this.getSelectGroupOptions();
-      this.getSelectEventOptions();
-      this.getSelectOptions();
+      this.getSelectYearOptions(); // this.getSelectGameOptions();
+      // this.getSelectTeamOptions();
+      // this.getSelectStausOptions();
+      // this.getSelectPlayernameOptions();
+      // this.getSelectGroupOptions();
+      // this.getSelectEventOptions();
+      // this.getSelectOptions();
     } // Get Select Year Options
 
   }, {
@@ -50251,9 +50594,9 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                 //     { value: '1', label: '2020' },
                 //     { value: '2', label: '2021' }
                 // ]
-                dataApiUrl = "/list";
+                dataApiUrl = "/yearlist";
                 _context.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
                 res = _context.sent;
@@ -50284,9 +50627,9 @@ var VideoModule = /*#__PURE__*/function (_Component) {
     }() // Get Select Gamename Options
 
   }, {
-    key: "getSelectGamenameOptions",
+    key: "getSelectGameOptions",
     value: function () {
-      var _getSelectGamenameOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _getSelectGameOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var dataApiUrl, res, data, options;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -50297,9 +50640,9 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                 //     { value: '1', label: '友誼賽' },
                 //     { value: '2', label: '實習盃' }
                 // ]
-                dataApiUrl = "/list";
+                dataApiUrl = "/gamelist";
                 _context2.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
                 res = _context2.sent;
@@ -50311,7 +50654,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                   };
                 });
                 this.setState({
-                  selectGamenameOptions: options
+                  selectGameOptions: options
                 });
 
               case 7:
@@ -50322,17 +50665,17 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         }, _callee2, this);
       }));
 
-      function getSelectGamenameOptions() {
-        return _getSelectGamenameOptions.apply(this, arguments);
+      function getSelectGameOptions() {
+        return _getSelectGameOptions.apply(this, arguments);
       }
 
-      return getSelectGamenameOptions;
+      return getSelectGameOptions;
     }() // Get Select School Options
 
   }, {
-    key: "getSelectSchoolOptions",
+    key: "getSelectTeamOptions",
     value: function () {
-      var _getSelectSchoolOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _getSelectTeamOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var dataApiUrl, res, data, options;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -50343,9 +50686,9 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                 //     { value: '1', label: '世新大學' },
                 //     { value: '2', label: '政治大學' }
                 // ]
-                dataApiUrl = "/list";
+                dataApiUrl = "/teamlist";
                 _context3.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
                 res = _context3.sent;
@@ -50357,7 +50700,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                   };
                 });
                 this.setState({
-                  selectSchoolOptions: options
+                  selectTeamOptions: options
                 });
 
               case 7:
@@ -50368,63 +50711,28 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         }, _callee3, this);
       }));
 
-      function getSelectSchoolOptions() {
-        return _getSelectSchoolOptions.apply(this, arguments);
+      function getSelectTeamOptions() {
+        return _getSelectTeamOptions.apply(this, arguments);
       }
 
-      return getSelectSchoolOptions;
-    }() // Get Select Staus Options
-
-  }, {
-    key: "getSelectStausOptions",
-    value: function () {
-      var _getSelectStausOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var options;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                options = [{
-                  value: '0',
-                  label: '進攻'
-                }, {
-                  value: '1',
-                  label: '防守'
-                }];
-                this.setState({
-                  selectStausOptions: options
-                });
-
-              case 2:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function getSelectStausOptions() {
-        return _getSelectStausOptions.apply(this, arguments);
-      }
-
-      return getSelectStausOptions;
+      return getSelectTeamOptions;
     }() // Get Select Playername Options
 
   }, {
     key: "getSelectPlayernameOptions",
     value: function () {
-      var _getSelectPlayernameOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      var _getSelectPlayernameOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
         var dataApiUrl, res, data, options;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                dataApiUrl = "/list";
-                _context5.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                dataApiUrl = "/namelist";
+                _context4.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
-                res = _context5.sent;
+                res = _context4.sent;
                 data = res.data;
                 options = data.Name.map(function (dd, index) {
                   return {
@@ -50438,10 +50746,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 7:
               case "end":
-                return _context5.stop();
+                return _context4.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee4, this);
       }));
 
       function getSelectPlayernameOptions() {
@@ -50454,11 +50762,11 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "getSelectGroupOptions",
     value: function () {
-      var _getSelectGroupOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _getSelectGroupOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
         var options;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 options = [{
                   label: "禁區",
@@ -50539,10 +50847,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 2:
               case "end":
-                return _context6.stop();
+                return _context5.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee5, this);
       }));
 
       function getSelectGroupOptions() {
@@ -50555,18 +50863,18 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "getSelectEventOptions",
     value: function () {
-      var _getSelectEventOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var _getSelectEventOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
         var dataApiUrl, res, data, options;
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                dataApiUrl = "/list";
-                _context7.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                dataApiUrl = "/eventlist";
+                _context6.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
-                res = _context7.sent;
+                res = _context6.sent;
                 data = res.data;
                 options = data.Event.map(function (dd, index) {
                   return {
@@ -50580,10 +50888,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 7:
               case "end":
-                return _context7.stop();
+                return _context6.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee6, this);
       }));
 
       function getSelectEventOptions() {
@@ -50596,20 +50904,20 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "getGameAllData",
     value: function () {
-      var _getGameAllData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(teamType) {
+      var _getGameAllData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(teamType) {
         var dataApiUrl, res, data;
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 dataApiUrl = "/data";
-                _context8.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().post(dataApiUrl, {
+                _context7.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
                   'teamType': teamType
                 });
 
               case 3:
-                res = _context8.sent;
+                res = _context7.sent;
                 data = res.data;
                 this.setState({
                   gameAllData: data
@@ -50617,10 +50925,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 6:
               case "end":
-                return _context8.stop();
+                return _context7.stop();
             }
           }
-        }, _callee8, this);
+        }, _callee7, this);
       }));
 
       function getGameAllData(_x) {
@@ -50633,23 +50941,23 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "getSelectOptions",
     value: function () {
-      var _getSelectOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _getSelectOptions = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
         var dataApiUrl, res, data, options;
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                dataApiUrl = "/file";
-                _context9.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().get(dataApiUrl);
+                dataApiUrl = "/hashlist";
+                _context8.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().get(dataApiUrl);
 
               case 3:
-                res = _context9.sent;
+                res = _context8.sent;
                 data = res.data;
                 options = data.map(function (d, index) {
                   return {
                     value: index,
-                    label: d
+                    label: d.VideoHash
                   };
                 }); // const options = [
                 //     { value: '0', label: 'Guest' },
@@ -50662,10 +50970,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 7:
               case "end":
-                return _context9.stop();
+                return _context8.stop();
             }
           }
-        }, _callee9, this);
+        }, _callee8, this);
       }));
 
       function getSelectOptions() {
@@ -50678,14 +50986,15 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "selectedHandleChange",
     value: function () {
-      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(e) {
+      var _selectedHandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(e) {
         var videoUrl;
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
-                this.getGameAllData(e.label);
-                videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label;
+                // this.EventhandleChange(e.label)
+                console.log(this.setState.selectOptions);
+                videoUrl = 'https://drive.google.com/uc?export=preview&id=' + e.value;
                 console.log(videoUrl);
                 this.setState({
                   videoUrl: videoUrl
@@ -50701,10 +51010,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 5:
               case "end":
-                return _context10.stop();
+                return _context9.stop();
             }
           }
-        }, _callee10, this);
+        }, _callee9, this);
       }));
 
       function selectedHandleChange(_x2) {
@@ -50714,20 +51023,99 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       return selectedHandleChange;
     }()
   }, {
-    key: "PlayerhandleChange",
+    key: "YearhandleChange",
     value: function () {
-      var _PlayerhandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(e) {
+      var _YearhandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(e) {
+        var dataApiUrl, res, data, options, set, result;
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                console.log('handleChange:', e);
+                console.log('input:', e.label);
+                dataApiUrl = "/yearfilter";
+                _context10.next = 5;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
+                  'label': e.label
+                });
+
+              case 5:
+                res = _context10.sent;
+                data = res.data;
+                console.log(data);
+                this.setState({
+                  Yearselected: e.label
+                });
+                options = data.Yearresult.map(function (dd, index) {
+                  return {
+                    value: index,
+                    label: dd.Game
+                  };
+                });
+                set = new Set();
+                result = options.filter(function (item) {
+                  return !set.has(item.label) ? set.add(item.label) : false;
+                });
+                console.log(result);
+                this.setState({
+                  selectGameOptions: result
+                });
+
+              case 14:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this);
+      }));
+
+      function YearhandleChange(_x3) {
+        return _YearhandleChange.apply(this, arguments);
+      }
+
+      return YearhandleChange;
+    }()
+  }, {
+    key: "GamehandleChange",
+    value: function () {
+      var _GamehandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(e) {
+        var dataApiUrl, res, data, options, set, result;
         return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                console.log('handleChange:', e);
-                console.log('input:', e.label);
-                this.setState({
-                  Playerselected: e.label
+                dataApiUrl = "/gamefilter";
+                _context11.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
+                  'Year': this.state.Yearselected,
+                  'label': e.label
                 });
 
               case 3:
+                res = _context11.sent;
+                data = res.data;
+                console.log(data);
+                console.log('handleChange:', e);
+                console.log('input:', e.label);
+                options = data.Gameresult.map(function (dd, index) {
+                  return {
+                    value: index,
+                    label: dd.Team
+                  };
+                });
+                set = new Set();
+                result = options.filter(function (item) {
+                  return !set.has(item.label) ? set.add(item.label) : false;
+                });
+                console.log(result);
+                this.setState({
+                  selectTeamOptions: result
+                });
+                this.setState({
+                  Gameselected: e.label
+                });
+
+              case 14:
               case "end":
                 return _context11.stop();
             }
@@ -50735,48 +51123,54 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         }, _callee11, this);
       }));
 
-      function PlayerhandleChange(_x3) {
-        return _PlayerhandleChange.apply(this, arguments);
+      function GamehandleChange(_x4) {
+        return _GamehandleChange.apply(this, arguments);
       }
 
-      return PlayerhandleChange;
+      return GamehandleChange;
     }()
   }, {
-    key: "EventhandleChange",
+    key: "TeamhandleChange",
     value: function () {
-      var _EventhandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(e) {
-        var dataApiUrl, res, data, options;
+      var _TeamhandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(e) {
+        var dataApiUrl, res, data, options, set, result;
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                console.log('handleChange:', e);
-                console.log('input:', e.label);
-                this.setState({
-                  Eventselected: e.label
-                });
-                dataApiUrl = "/find-videos";
-                _context12.next = 6;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().post(dataApiUrl, {
-                  'label': e.label,
-                  'label1': this.state.Playerselected
+                dataApiUrl = "/teamfilter";
+                _context12.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
+                  'Year': this.state.Yearselected,
+                  'Game': this.state.Gameselected,
+                  'label': e.label
                 });
 
-              case 6:
+              case 3:
                 res = _context12.sent;
                 data = res.data;
                 console.log(data);
-                options = data.map(function (d, index) {
+                console.log('handleChange:', e);
+                console.log('input:', e.label);
+                options = data.Teamresult.map(function (dd, index) {
                   return {
                     value: index,
-                    label: d.FullCorrectFileName
+                    label: dd.Name
                   };
                 });
+                set = new Set();
+                result = options.filter(function (item) {
+                  return !set.has(item.label) ? set.add(item.label) : false;
+                });
+                console.log(result);
                 this.setState({
-                  selectOptions: options
-                }); // this.setState({value: Number(e.target.value)+1});
+                  selectNameOptions: result
+                });
+                this.setState({
+                  Teamselected: e.label
+                });
 
-              case 11:
+              case 14:
               case "end":
                 return _context12.stop();
             }
@@ -50784,7 +51178,112 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         }, _callee12, this);
       }));
 
-      function EventhandleChange(_x4) {
+      function TeamhandleChange(_x5) {
+        return _TeamhandleChange.apply(this, arguments);
+      }
+
+      return TeamhandleChange;
+    }()
+  }, {
+    key: "NamehandleChange",
+    value: function () {
+      var _NamehandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(e) {
+        var dataApiUrl, res, data, options, set, result;
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                dataApiUrl = "/namefilter";
+                _context13.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
+                  'Year': this.state.Yearselected,
+                  'Game': this.state.Gameselected,
+                  'Team': this.state.Teamselected,
+                  'label': e.label
+                });
+
+              case 3:
+                res = _context13.sent;
+                data = res.data;
+                console.log(data);
+                console.log('handleChange:', e);
+                console.log('input:', e.label);
+                options = data.Nameresult.map(function (dd, index) {
+                  return {
+                    value: index,
+                    label: dd.Event
+                  };
+                });
+                set = new Set();
+                result = options.filter(function (item) {
+                  return !set.has(item.label) ? set.add(item.label) : false;
+                });
+                console.log(result);
+                this.setState({
+                  selectEventOptions: result
+                });
+                this.setState({
+                  Nameselected: e.label
+                });
+
+              case 14:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function NamehandleChange(_x6) {
+        return _NamehandleChange.apply(this, arguments);
+      }
+
+      return NamehandleChange;
+    }()
+  }, {
+    key: "EventhandleChange",
+    value: function () {
+      var _EventhandleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(e) {
+        var dataApiUrl, res, data, options;
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                console.log('handleChange:', e);
+                console.log('input:', e.label);
+                dataApiUrl = "/hashlist";
+                _context14.next = 5;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
+                  'Event': e.label,
+                  'Year': this.state.Yearselected,
+                  'Game': this.state.Gameselected,
+                  'Team': this.state.Teamselected,
+                  'Name': this.state.Nameselected
+                });
+
+              case 5:
+                res = _context14.sent;
+                data = res.data;
+                console.log(data);
+                options = data.Allresult.map(function (dd, index) {
+                  return {
+                    value: dd.VideoHash,
+                    label: dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter
+                  };
+                });
+                this.setState({
+                  selectOptions: options
+                });
+
+              case 10:
+              case "end":
+                return _context14.stop();
+            }
+          }
+        }, _callee14, this);
+      }));
+
+      function EventhandleChange(_x7) {
         return _EventhandleChange.apply(this, arguments);
       }
 
@@ -50793,10 +51292,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "handleChange",
     value: function () {
-      var _handleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(e) {
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      var _handleChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(e) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 console.log('handleChange:', e);
                 console.log('input:', e.target.value);
@@ -50806,13 +51305,13 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 3:
               case "end":
-                return _context13.stop();
+                return _context15.stop();
             }
           }
-        }, _callee13, this);
+        }, _callee15, this);
       }));
 
-      function handleChange(_x5) {
+      function handleChange(_x8) {
         return _handleChange.apply(this, arguments);
       }
 
@@ -50821,21 +51320,21 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }, {
     key: "handleSubmit",
     value: function () {
-      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16() {
         var value, dataApiUrl, res, data;
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
                 value = this.state.selected;
                 dataApiUrl = "/parameter";
-                _context14.next = 4;
-                return axios__WEBPACK_IMPORTED_MODULE_16___default().post(dataApiUrl, {
+                _context16.next = 4;
+                return axios__WEBPACK_IMPORTED_MODULE_18___default().post(dataApiUrl, {
                   'value': value
                 });
 
               case 4:
-                res = _context14.sent;
+                res = _context16.sent;
                 data = res.data;
                 this.setState({
                   gameAllData: data
@@ -50844,10 +51343,10 @@ var VideoModule = /*#__PURE__*/function (_Component) {
 
               case 8:
               case "end":
-                return _context14.stop();
+                return _context16.stop();
             }
           }
-        }, _callee14, this);
+        }, _callee16, this);
       }));
 
       function handleSubmit() {
@@ -50861,59 +51360,59 @@ var VideoModule = /*#__PURE__*/function (_Component) {
     value: function render() {
       var _this$state = this.state,
           selectYearOptions = _this$state.selectYearOptions,
-          selectGamenameOptions = _this$state.selectGamenameOptions,
-          selectSchoolOptions = _this$state.selectSchoolOptions,
+          selectGameOptions = _this$state.selectGameOptions,
+          selectTeamOptions = _this$state.selectTeamOptions,
           selectStausOptions = _this$state.selectStausOptions,
-          selectPlayernameOptions = _this$state.selectPlayernameOptions,
+          selectNameOptions = _this$state.selectNameOptions,
           selectGroupOptions = _this$state.selectGroupOptions,
           selectEventOptions = _this$state.selectEventOptions,
           selectOptions = _this$state.selectOptions,
           selected = _this$state.selected,
           videoUrl = _this$state.videoUrl,
           gameAllData = _this$state.gameAllData;
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react__WEBPACK_IMPORTED_MODULE_14__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react__WEBPACK_IMPORTED_MODULE_16__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "container"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "col-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("h2", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h2", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7\u5E74\u4EFD",
-        options: selectYearOptions //    onChange={this.selectedHandleChange}
-
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+        options: selectYearOptions,
+        onChange: this.YearhandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7\u76C3\u8CFD",
-        options: selectGamenameOptions //    onChange={this.selectedHandleChange}
-
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+        options: selectGameOptions,
+        onChange: this.GamehandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7\u5B78\u6821",
-        options: selectSchoolOptions //    onChange={this.selectedHandleChange}
-
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+        options: selectTeamOptions,
+        onChange: this.TeamhandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7\u7403\u54E1",
-        options: selectPlayernameOptions,
-        onChange: this.PlayerhandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+        options: selectNameOptions,
+        onChange: this.NamehandleChange
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7\u4E8B\u4EF6",
         options: selectEventOptions,
         onChange: this.EventhandleChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(react_select__WEBPACK_IMPORTED_MODULE_21__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         placeholder: "\u9078\u64C7",
         options: selectOptions,
         onChange: this.selectedHandleChange
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", {
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "col"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("video", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("video", {
         id: "video",
         width: "100%",
         controls: true
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement("source", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("source", {
         src: videoUrl,
         type: "video/mp4"
       })))))));
@@ -50921,11 +51420,11 @@ var VideoModule = /*#__PURE__*/function (_Component) {
   }]);
 
   return VideoModule;
-}(react__WEBPACK_IMPORTED_MODULE_14__.Component); // export default VideoModule;
+}(react__WEBPACK_IMPORTED_MODULE_16__.Component); // export default VideoModule;
 
 
 if (document.getElementById("video_module")) {
-  react_dom__WEBPACK_IMPORTED_MODULE_15__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_14__.createElement(VideoModule, null), document.getElementById("video_module"));
+  react_dom__WEBPACK_IMPORTED_MODULE_17__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(VideoModule, null), document.getElementById("video_module"));
 }
 })();
 
