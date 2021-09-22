@@ -418,17 +418,17 @@ class VideoModule extends Component {
 
                         <div className="col-4">
                             <h2>搜尋條件</h2>
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇年份"
                                     options={selectYearOptions}
                                    onChange={this.YearhandleChange}
                                 />
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇盃賽"
                                     options={selectGameOptions}
                                    onChange={this.GamehandleChange}
                                 />
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇學校"
                                     options={selectTeamOptions}
                                    onChange={this.TeamhandleChange}
@@ -438,7 +438,7 @@ class VideoModule extends Component {
                                     options={selectStausOptions}
                                 //    onChange={this.selectedHandleChange}
                                 /> */}
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇球員"
                                     options={selectNameOptions}
                                    onChange={this.NamehandleChange}
@@ -448,12 +448,12 @@ class VideoModule extends Component {
                                     options={selectGroupOptions}
                                 //    onChange={this.selectedHandleChange}
                                 /> */}
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇事件"
                                     options={selectEventOptions}
                                    onChange={this.EventhandleChange}
                                 />
-                                <Select className="mb-2"
+                                <Select className="mb-2" searchable={false}
                                     placeholder="選擇"
                                     options={selectOptions}
                                     onChange={this.selectedHandleChange}
