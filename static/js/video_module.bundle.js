@@ -51378,37 +51378,37 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         className: "col-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h2", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7\u5E74\u4EFD",
         options: selectYearOptions,
         onChange: this.YearhandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7\u76C3\u8CFD",
         options: selectGameOptions,
         onChange: this.GamehandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7\u5B78\u6821",
         options: selectTeamOptions,
         onChange: this.TeamhandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7\u7403\u54E1",
         options: selectNameOptions,
         onChange: this.NamehandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7\u4E8B\u4EF6",
         options: selectEventOptions,
         onChange: this.EventhandleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
-        searchable: false,
+        isSearchable: false,
         placeholder: "\u9078\u64C7",
         options: selectOptions,
         onChange: this.selectedHandleChange
