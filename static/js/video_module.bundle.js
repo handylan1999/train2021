@@ -51375,8 +51375,8 @@ var VideoModule = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "row"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
-        className: "col-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h2", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
+        className: "col-sm-3 col-md-6 col-lg-4"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h4", null, "\u641C\u5C0B\u689D\u4EF6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement(react_select__WEBPACK_IMPORTED_MODULE_23__.default, {
         className: "mb-2",
         isSearchable: false,
         placeholder: "\u9078\u64C7\u5E74\u4EFD",
@@ -51413,7 +51413,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         options: selectOptions,
         onChange: this.selectedHandleChange
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
-        className: "col"
+        className: "col-sm-9 col-md-6 col-lg-8"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("video", {
         id: "video",
         width: "100%",

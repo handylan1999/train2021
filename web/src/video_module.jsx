@@ -415,76 +415,41 @@ class VideoModule extends Component {
             <React.Fragment>
                 <div className="container">
                     <div className="row">
-
-                        <div className="col-4">
-                            <h2>搜尋條件</h2>
+                        <div className="col-sm-3 col-md-6 col-lg-4">
+                            <h4>搜尋條件</h4>
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇年份"
                                     options={selectYearOptions}
-                                   onChange={this.YearhandleChange}
+                                onChange={this.YearhandleChange}
                                 />
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇盃賽"
                                     options={selectGameOptions}
-                                   onChange={this.GamehandleChange}
+                                onChange={this.GamehandleChange}
                                 />
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇學校"
                                     options={selectTeamOptions}
-                                   onChange={this.TeamhandleChange}
+                                onChange={this.TeamhandleChange}
                                 />
-                                {/* <Select 
-                                    placeholder="進攻/防守"
-                                    options={selectStausOptions}
-                                //    onChange={this.selectedHandleChange}
-                                /> */}
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇球員"
                                     options={selectNameOptions}
-                                   onChange={this.NamehandleChange}
+                                onChange={this.NamehandleChange}
                                 />
-                                {/* <Select
-                                    placeholder="選擇戰術"
-                                    options={selectGroupOptions}
-                                //    onChange={this.selectedHandleChange}
-                                /> */}
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇事件"
                                     options={selectEventOptions}
-                                   onChange={this.EventhandleChange}
+                                onChange={this.EventhandleChange}
                                 />
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇"
                                     options={selectOptions}
                                     onChange={this.selectedHandleChange}
                                 />
-                                {/* <div className="2buttons">
-                                    <Button variant="secondary" size="lg" className="button mb-2">
-                                        Clear
-                                    </Button>{' '}
-                                    <Button variant="primary" size="lg" className="button mb-2">
-                                        Apply
-                                    </Button>
-                                </div> */}
-
-                            {/* <Clock ></Clock> */}
-                                {/* <Select
-                                className="mb-2"
-                                    placeholder="選擇"
-                                    options={selectOptions}
-                                    onChange={this.selectedHandleChange}
-                                /> */}
-
-                                {/* <p className="text-center mb-2">{selected}</p>
-                                
-                                <form className="form-group" onSubmit={this.handleSubmit}>
-                                    <input type="text" className="form-control mb-2" defaultValue={this.state.value} onChange={this.handleChange} />
-                                    <input type="submit" value="送出" className="btn btn-primary form-control mb-2" />
-                                </form> */}
-
                             </div>
 
-                        <div className="col">
+                        <div className="col-sm-9 col-md-6 col-lg-8">
                             <div>
                                 <video id="video" width="100%" controls={true}>
                                     <source src={videoUrl} type="video/mp4" />
@@ -510,32 +475,7 @@ class VideoModule extends Component {
                                 <Videocard></Videocard>
                                 <Videocard></Videocard>
                             </div> */}
-                            {/* <table className="table table-striped">
-                                <thead className="text-center">
-                                    <tr>
-                                        <th scope="col">局數</th>
-                                        <th scope="col">打者</th>
-                                        <th scope="col">投手</th>
-                                        <th scope="col">球種</th>
-                                        <th scope="col">球速</th>
-                                        <th scope="col">結果</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-center">
-                                    {gameAllData.map((data, index) => (
-                                        <tr key={index}>
-                                            <td>{data.局數}</td>
-                                            <td>{data.投手}</td>
-                                            <td>{data.打者}</td>
-                                            <td>{data.球種}</td>
-                                            <td>{data.球速}</td>
-                                            <td>{data.結果}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table> */}
                         </div>
-
                     </div>
                 </div>
             </React.Fragment >
