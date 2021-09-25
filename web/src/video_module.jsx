@@ -364,7 +364,7 @@ class VideoModule extends Component {
         console.log(data);
         const options = data.Allresult.map((dd, index) => ({
                     value: dd.VideoHash,
-                    label: dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter,
+                    label: " No." + dd.Number + "-" + dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter,
                 }))
 
         this.setState({ selectOptions: options });

@@ -51268,7 +51268,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
                 options = data.Allresult.map(function (dd, index) {
                   return {
                     value: dd.VideoHash,
-                    label: dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter
+                    label: " No." + dd.Number + "-" + dd.Date + "-" + dd.T_Guest + " VS " + dd.T_Home + "-" + dd.Quarter
                   };
                 });
                 this.setState({

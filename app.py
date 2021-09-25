@@ -4,6 +4,7 @@ import pandas as pd
 from flask import Flask, request, render_template, jsonify
 from flask_cors import CORS
 
+
 app = Flask(__name__)
 CORS(app)
 
@@ -114,12 +115,12 @@ def gamefilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask = record_data['Year'] == gamefilter['Year']
-    result = record_data.loc[mask]
+    mask1 = record_data['Year'] == gamefilter['Year']
+    result1 = record_data.loc[mask1]
 
-    mask = record_data['Game'] == gamefilter['label']
-    result = record_data.loc[mask]
-    game_result = result.to_dict(orient = 'records')
+    mask2 = result1['Game'] == gamefilter['label']
+    result2 = result1.loc[mask2]
+    game_result = result2.to_dict(orient = 'records')
 
     game_data_json = {
             "Gameresult" : game_result
@@ -154,15 +155,15 @@ def teamfilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask = record_data['Year'] == teamfilter['Year']
-    result = record_data.loc[mask]
+    mask1 = record_data['Year'] == teamfilter['Year']
+    result1 = record_data.loc[mask1]
 
-    mask = record_data['Game'] == teamfilter['Game']
-    result = record_data.loc[mask]
+    mask2 = result1['Game'] == teamfilter['Game']
+    result2 = result1.loc[mask2]
 
-    mask = record_data['Team'] == teamfilter['label']
-    result = record_data.loc[mask]
-    game_result = result.to_dict(orient = 'records')
+    mask3 = result2['Team'] == teamfilter['label']
+    result3 = result2.loc[mask3]
+    game_result = result3.to_dict(orient = 'records')
 
     game_data_json = {
             "Teamresult" : game_result
@@ -196,18 +197,18 @@ def namefilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask = record_data['Year'] == namefilter['Year']
-    result = record_data.loc[mask]
+    mask1 = record_data['Year'] == namefilter['Year']
+    result1 = record_data.loc[mask1]
 
-    mask = record_data['Game'] == namefilter['Game']
-    result = record_data.loc[mask]
+    mask2 = result1['Game'] == namefilter['Game']
+    result2 = result1.loc[mask2]
 
-    mask = record_data['Team'] == namefilter['Team']
-    result = record_data.loc[mask]
+    mask3 = result2['Team'] == namefilter['Team']
+    result3 = result2.loc[mask3]
 
-    mask = record_data['Name'] == namefilter['label']
-    result = record_data.loc[mask]
-    game_result = result.to_dict(orient = 'records')
+    mask4 = result3['Name'] == namefilter['label']
+    result4 = result3.loc[mask4]
+    game_result = result4.to_dict(orient = 'records')
 
     game_data_json = {
             "Nameresult" : game_result
@@ -261,21 +262,21 @@ def hashlist_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask = record_data['Year'] == final['Year']
-    result = record_data.loc[mask]
+    mask1 = record_data['Year'] == final['Year']
+    result1 = record_data.loc[mask1]
 
-    mask = record_data['Game'] == final['Game']
-    result = record_data.loc[mask]
+    mask2 = result1['Game'] == final['Game']
+    result2 = result1.loc[mask2]
 
-    mask = record_data['Team'] == final['Team']
-    result = record_data.loc[mask]
+    mask3 = result2['Team'] == final['Team']
+    result3 = result2.loc[mask3]
 
-    mask = record_data['Name'] == final['Name']
-    result = record_data.loc[mask]
+    mask4 = result3['Name'] == final['Name']
+    result4 = result3.loc[mask4]
 
-    mask = record_data['Event'] == final['Event']
-    result = record_data.loc[mask]
-    allresult = result.to_dict(orient = 'records')
+    mask5 = result4['Event'] == final['Event']
+    result5 = result4.loc[mask5]
+    allresult = result5.to_dict(orient = 'records')
 
     game_data_json = {
             "Allresult" : allresult
@@ -306,78 +307,7 @@ def hashlist_api():
     # return jsonify(videoFullCorrectFileName_list), 200
 
 
-# @app.route('/data', methods=['POST'])
-# def data_para_api():
 
-#     teamType = request.json
-#     selectedTeamType = teamType['teamType']
-#     print('Posted:' , teamType['teamType'])
-    
-#     data_path = 'static/records/20210817.xlsm'
-
-#     home_df = pd.read_excel(data_path, sheet_name="HomeAttackPlay-by-Play", usecols=["總球數","局數","投手","打者","球種","球速","結果","好壞球","投手球數","揮棒","Count","在壘與出局","Clip_ID","ExitVelo","LaunchAngle","Direction"], engine='openpyxl')
-#     home_data = home_df.dropna(subset=["總球數"]) # If 總球數 is Nan then del this row.
-#     home_data = home_data.fillna("")
-
-#     home_data_dict = home_data.to_dict(orient = 'records')
-
-#     guest_df = pd.read_excel(data_path, sheet_name="GuestAttackPlay-by-Play", usecols=["總球數","局數","投手","打者","球種","球速","結果","好壞球","投手球數","揮棒","Count","在壘與出局","Clip_ID","ExitVelo","LaunchAngle","Direction"], engine='openpyxl')
-#     guest_data = guest_df.dropna(subset=["總球數"]) # If 總球數 is Nan then del this row.
-#     guest_data = guest_data.fillna("")
-
-#     guest_data_dict = guest_data.to_dict(orient = 'records')
-
-#     game_dada_json = {
-#         'HomeAllLogs': home_data_dict,
-#         'GuestAllLogs': guest_data_dict,
-#     }
-    
-#     if not request.json or not 'teamType' in request.json:
-#         return jsonify(), 400
-#     elif selectedTeamType == 'Guest':
-#         task = game_dada_json["GuestAllLogs"]
-#         return jsonify(task), 200
-#     else:
-#         task = game_dada_json["HomeAllLogs"]
-#         return jsonify(task), 200
-
-# @app.route('/parameter', methods=['POST'])
-# def parameter_api():
-
-#     teamType = request.json
-#     selectedTeamType = teamType['value']
-
-#     print('Posted:' , teamType['value'])
-    
-#     data_path = 'static/records/20210817.xlsm'
-
-#     home_df = pd.read_excel(data_path, sheet_name="HomeAttackPlay-by-Play", usecols=["總球數","局數","投手","打者","球種","球速","結果","好壞球","投手球數","揮棒","Count","在壘與出局","Clip_ID","ExitVelo","LaunchAngle","Direction"], engine='openpyxl')
-#     home_data = home_df.dropna(subset=["總球數"]) # If 總球數 is Nan then del this row.
-#     home_data = home_data.fillna("")
-
-#     home_data_dict = home_data.to_dict(orient = 'records')
-
-#     guest_df = pd.read_excel(data_path, sheet_name="GuestAttackPlay-by-Play", usecols=["總球數","局數","投手","打者","球種","球速","結果","好壞球","投手球數","揮棒","Count","在壘與出局","Clip_ID","ExitVelo","LaunchAngle","Direction"], engine='openpyxl')
-#     guest_data = guest_df.dropna(subset=["總球數"]) # If 總球數 is Nan then del this row.
-#     guest_data = guest_data.fillna("")
-
-#     guest_data_dict = guest_data.to_dict(orient = 'records')
-
-#     game_dada_json = {
-#         'HomeAllLogs': home_data_dict,
-#         'GuestAllLogs': guest_data_dict,
-#     }
-    
-#     if not request.json or not 'value' in request.json:
-#         return jsonify(), 400
-#     elif selectedTeamType == '客隊':
-#         task = game_dada_json["GuestAllLogs"]
-#         return jsonify(task,'客隊'), 200
-#     elif selectedTeamType == '主隊':
-#         task = game_dada_json["HomeAllLogs"]
-#         return jsonify(task, '主隊'), 200
-#     else:
-#         return jsonify('nothing'), 200
 
 @app.route('/find-videos', methods=['POST','GET'])
 def find_video_api():
