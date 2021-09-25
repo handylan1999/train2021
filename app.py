@@ -115,12 +115,12 @@ def gamefilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask1 = record_data['Year'] == gamefilter['Year']
-    result1 = record_data.loc[mask1]
+    mask = record_data['Year'] == gamefilter['Year']
+    record_data = record_data.loc[mask]
 
-    mask2 = result1['Game'] == gamefilter['label']
-    result2 = result1.loc[mask2]
-    game_result = result2.to_dict(orient = 'records')
+    mask = record_data['Game'] == gamefilter['label']
+    result = record_data.loc[mask]
+    game_result = result.to_dict(orient = 'records')
 
     game_data_json = {
             "Gameresult" : game_result
@@ -155,15 +155,15 @@ def teamfilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask1 = record_data['Year'] == teamfilter['Year']
-    result1 = record_data.loc[mask1]
+    mask = record_data['Year'] == teamfilter['Year']
+    result = record_data.loc[mask]
 
-    mask2 = result1['Game'] == teamfilter['Game']
-    result2 = result1.loc[mask2]
+    mask = record_data['Game'] == teamfilter['Game']
+    result = record_data.loc[mask]
 
-    mask3 = result2['Team'] == teamfilter['label']
-    result3 = result2.loc[mask3]
-    game_result = result3.to_dict(orient = 'records')
+    mask = record_data['Team'] == teamfilter['label']
+    result = record_data.loc[mask]
+    game_result = result.to_dict(orient = 'records')
 
     game_data_json = {
             "Teamresult" : game_result
