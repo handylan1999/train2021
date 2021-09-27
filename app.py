@@ -197,18 +197,18 @@ def namefilter_api():
     
     record_data = pd.read_excel(data_path, sheet_name="Sheet1", usecols=["Year","Date","Game","T_Guest","T_Home","Quarter","Team","Number","Name","Event","Type","VideoHash"], engine='openpyxl')
     record_data = record_data.dropna()
-    mask1 = record_data['Year'] == namefilter['Year']
-    result1 = record_data.loc[mask1]
+    mask = record_data['Year'] == namefilter['Year']
+    result = record_data.loc[mask]
 
-    mask2 = result1['Game'] == namefilter['Game']
-    result2 = result1.loc[mask2]
+    mask = record_data['Game'] == namefilter['Game']
+    result = record_data.loc[mask]
 
-    mask3 = result2['Team'] == namefilter['Team']
-    result3 = result2.loc[mask3]
+    mask = record_data['Team'] == namefilter['Team']
+    result = record_data.loc[mask]
 
-    mask4 = result3['Name'] == namefilter['label']
-    result4 = result3.loc[mask4]
-    game_result = result4.to_dict(orient = 'records')
+    mask = record_data['Name'] == namefilter['label']
+    result = record_data.loc[mask]
+    game_result = result.to_dict(orient = 'records')
 
     game_data_json = {
             "Nameresult" : game_result
