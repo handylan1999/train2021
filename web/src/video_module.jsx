@@ -415,7 +415,7 @@ class VideoModule extends Component {
             <React.Fragment>
                 <div className="container">
                     <div className="row">
-                        <div className="col-3 col-sm-4 col-md-6 col-lg-4">
+                        <div className="col-sm-4 col-md-6 col-lg-4">
                             <h4>搜尋條件</h4>
                                 <Select className="mb-2" isSearchable={false}
                                     placeholder="選擇年份"
@@ -449,7 +449,7 @@ class VideoModule extends Component {
                                 />
                             </div>
 
-                        <div className="col col-sm-8 col-md-6 col-lg-8">
+                        <div className="col-sm-8 col-md-6 col-lg-8">
                             <h4></h4>
                             <div>
                                 <video id="video" width="100%" controls={true}>
