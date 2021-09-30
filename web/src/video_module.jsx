@@ -450,7 +450,7 @@ class VideoModule extends Component {
                             </div>
 
                         <div className="col-sm-8 col-md-6 col-lg-8">
-                            <h4></h4>
+                            <h4>現正播放</h4>
                             <div>
                                 <video id="video" width="100%" controls={true}>
                                     <source src={videoUrl} type="video/mp4" />

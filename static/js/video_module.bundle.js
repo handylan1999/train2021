@@ -51414,7 +51414,7 @@ var VideoModule = /*#__PURE__*/function (_Component) {
         onChange: this.selectedHandleChange
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", {
         className: "col-sm-8 col-md-6 col-lg-8"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h4", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("video", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("h4", null, "\u73FE\u6B63\u64AD\u653E"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_16__.createElement("video", {
         id: "video",
         width: "100%",
         controls: true
